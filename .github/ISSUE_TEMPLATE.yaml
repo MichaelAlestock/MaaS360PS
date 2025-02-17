@@ -1,0 +1,50 @@
+name: Bug Report
+about: File a bug report
+title: "[Bug]: "
+ref: "main"
+assignees: ["alestockm"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  # some markdown that will only be visible once the issue has been created
+  - type: markdown
+    attributes:
+      value: |
+        This issue was created by an issue **template** :)
+    visible: [content]
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Screenshots are even better! :)
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: PowerShell Version
+      description: What version of PowerShell are you running?
+      options:
+        - Windows PowerShell i.e. 5.1
+        - PowerShell Core i.e. 7
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error stream
+      description: Please copy and paste any relevant output from the error stream.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      hide_label: true
+      description: By submitting this issue, you have read the contribution guidelines.
+      options:
+        - label: I have also read the CONTRIBUTION.MD
+          required: true
+          visible: [form]
