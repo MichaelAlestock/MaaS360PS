@@ -9,7 +9,7 @@ jobs:
       # Install or import the required dependencies
       - uses: actions/checkout@v1
       - name: Script
-        run: ./Install-RequiredModules.ps1
+        run: ./Install-RequiredModule.ps1
         shell: pwsh
 
       # Start building the module
