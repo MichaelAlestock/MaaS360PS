@@ -15,5 +15,5 @@ jobs:
       # Start building the module
       - uses: actions/checkout@v1
       - name: Script
-        run: ./Start-ModuleBuild.ps1
+        run: ./Start-ModuleBuild.ps1 -Path '.\docs\
         shell: pwsh
