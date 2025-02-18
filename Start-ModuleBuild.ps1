@@ -51,12 +51,26 @@ if ($BumpVersion)
     $Version = $NewVersion
 }
 
+$MaaS360Session = [ordered]@{
+    'url'          = $null
+    'endpoint'     = $null
+    'platformID'   = $null
+    'billingID'    = $null
+    'userName'     = $null
+    'password'     = $null
+    'appID'        = $null
+    'appVersion'   = $null
+    'appAccessKey' = $null 
+    'apiKey'       = $null
+}
+
 $Parameters = @{
     SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'build.psd1')
     OutputDirectory   = '../output'
     SourceDirectories = @('en-US/public', 'en-US/private')
     CopyPaths         = @('en-US')
     Version           = $Version
+    Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Global' -Force"
     # UnversionedOutputDirectory = $false
 }
 $VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
