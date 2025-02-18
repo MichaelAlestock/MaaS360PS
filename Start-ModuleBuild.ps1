@@ -1,12 +1,17 @@
 #region Build Module
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = 'Markdown help files')]
 Param(
+    [Parameter(ParameterSetName = 'Control version')]
     [version]$Version,
+    [Parameter(ParameterSetName = 'Control version')]
     [ValidateSet('Major', 'Minor', 'Patch')]
     [string]$BumpVersion,
     [Parameter(Mandatory = $false)]
+    [Parameter(ParameterSetName = 'Markdown help files')]
     [string]$Path,
+    [Parameter(ParameterSetName = 'Markdown help files')]
     [string]$Output,
+    [Parameter(ParameterSetName = 'Markdown help files')]
     [switch]$Update
 )
 
@@ -72,6 +77,7 @@ $Parameters = @{
     CopyPaths         = @('en-US')
     Version           = $Version
     Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Script' -Force"
+    Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
 
@@ -101,6 +107,5 @@ if ($PSBoundParameters.ContainsKey('Path'))
         Update-MarkdownHelp -Path $Path
     }
 }
-
 Build-Module @Parameters
 #endregion Build Module
