@@ -1,49 +1,46 @@
-# PSMaaS360
-
-PowerShell API Wrapper for MaaS360
-
-<img src='https://raw.githubusercontent.com/PowerShell/PowerShell/refs/heads/master/assets/Powershell_256.png'>
+[![Build](https://github.com/MichaelAlestock/MaaS360PS/actions/workflows/build.yml/badge.svg)](https://github.com/MichaelAlestock/MaaS360PS/actions/workflows/build.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-This is a primitive PowerShell module for querying the [IBM MaaS360 Web Services API](https://www.ibm.com/docs/en/maas360?topic=services-maas360-api-reference-web), written to quickly pull relevant information from our MaaS360 instance to be consumed by other tools or APIs.
+A PowerShell API wrapper for the [IBM MaaS360 Web Services API](https://www.ibm.com/docs/en/maas360?topic=services-maas360-api-reference-web). 
 
-> **This is not fully featured, but is expected to work at a basic level.**
-
-## Instructions
+> :warning: **_WARNING_**: **This is a work in progress. If you have any issues please utilize the Github Issues or submit a pull request.**
 
 ---
 
-### One Time Setup
+> This will soon be published to PSGallery, I apologize for the inconvenience.
 
-* Download the repository
-  
-* Unzip the archive to its respective module path:
-  
-   _Windows PowerShell_: `$env:USERPROFILE\Documents\WindowsPowerShell\Modules\`
+## Installation
 
-    _PowerShell 7_: `$env:userprofile\Documents\PowerShell\Modules\`
+```powershell
 
-* Set execution policy (in your preferred scope) to 'Remote Signed'
+# Step 1. Clone the repository to your respective PowerShell module path.
 
-    * If necessary the `Unblock-File` cmdlet may need to be ran do to absence of digital signature
+# Step 2. Import the module into your session.
 
-* Import the module.
-  
-    `Import-Module -Name 'PSMaaS360'` **-or** `Import-Module \\Path\To\PSMaaS360`
+Import-Module -Name //path/to/module/
 
-#### Getting Commands
+# Step 3. Create a session to generate an API key
 
-##### Get commands from the module
+# NOTE: All parameters values are found in the MaaS360 portal under Setup > Documentation.
 
-    Get-Command -Module PSMaaS360
+Connect-MaaS360PS -platformID '0' -BillingID '0123456789' -AppID '01234567_apple' -AppVersion '1.0' `
+-AppAccessKey 'cyMQIENUGZ' -Credentials 'your_email_address' -Url 'https://apis.m3.maas360.com/auth-apis/auth/1.0/' `
+-Endpoint 'authenticate' -Method 'Post'
 
-#### Getting Help
+```
 
-##### Get help with an external window
+## Usage
 
-   ` Get-Help -Name Get-PSMaaS360User -ShowWindow` <- My Preferred way
+```powershell
 
-##### Get help via the about topic
+# Utilize PowerShell's discoverability to learn more about functions and their usages.
 
-   ` Get-Help -Name about_PSMaaS360`
+Get-Help about_MaaS360PS
+
+Get-Command -Module 'MaaS360PS'
+
+Get-Help Get-MaaS360User -ShowWindow
+
+```
+
