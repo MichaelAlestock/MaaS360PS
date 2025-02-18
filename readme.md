@@ -4,7 +4,8 @@
 
 A PowerShell API wrapper for the [IBM MaaS360 Web Services API](https://www.ibm.com/docs/en/maas360?topic=services-maas360-api-reference-web). 
 
-> :warning: **_WARNING_**: **This is a work in progress. If you have any issues please utilize the Github Issues or submit a pull request.**
+> :warning: **_WARNING_**: **This is a work-in-progress and a complete rewrite of my original idea. Most functions are will not work for 
+> a few updates since they followed old design ideas. Please take this into account before cloning.  If you have any issues please utilize the Github Issues or submit a pull request.**
 
 ---
 
