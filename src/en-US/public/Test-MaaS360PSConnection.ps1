@@ -1,13 +1,20 @@
 ﻿# $Method = 'Get'
 function Test-MaaS360PSConnection
 {
-    # Test-MaaS360PSConnection
-
     <#
-     Description: Test connection to the BASE URI of the MaaS360 API
-
+    .SYNOPSIS
+        A short one-line action-based description, e.g. 'Tests if a function is valid'
+    .DESCRIPTION
+        A longer description of the function, its purpose, common use cases, etc.
+    .NOTES
+        Information or caveats about the function e.g. 'This function is not supported in Linux'
+    .LINK
+        Specify a URI to a help page, this will show when Get-Help -Online is used.
+    .EXAMPLE
+        Test-MyTestFunction -Verbose
+        Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
     #>
-
+    
     [CmdletBinding()]
     Param(
         [string]$Url,
@@ -21,20 +28,31 @@ function Test-MaaS360PSConnection
         throw 'No connection created to MaaS360 instance. Please run "Connect-MaaS360PS" to create a session.'
     }
 
+    $Headers = @{
+        'Accept'       = 'application/json'
+        'Content-Type' = 'application/json'
+    }
+
     $Uri = $Url + '/' + $Endpoint + $BillingID
+
+    Write-Debug -Message "URI: $Uri"
+    Write-Debug -Message "API KEY: $(($MaaS360Session.apiKey) | ConvertFrom-SecureString -AsPlainText)"
 
     $Parameters = @{
         Uri            = $Uri
         Method         = $Method
+        Headers        = $Headers
         Authentication = 'Bearer'
-        Token          = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
+        Token          = $MaaS360Session.apiKey # Forgot this needs to actually send secured.. wow
     }
 
     try
     {
         $TestResponse = Invoke-RestMethod @Parameters
+        
+        Write-Debug -Message "Debug response: $TestResponse"
 
-        if ($TestResponse -eq '1234567890')
+        if ($TestResponse)
         {
             Write-Output -InputObject "Connection to [$Uri] successful."
             return $true

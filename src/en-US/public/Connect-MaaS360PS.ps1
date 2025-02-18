@@ -65,7 +65,6 @@
         </authRequest>
 "@
 
-
         $Headers = @{
             'Accept'       = 'application/json'
             'Content-Type' = 'application/xml'
@@ -84,8 +83,9 @@
 
         $Script:Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
 
-        $AuthResponse = Invoke-RestMethod $Uri -Body $Body -Headers $Headers -Method $Method
+        $AuthResponse = Invoke-RestMethod -Uri $Uri -Body $Body -Headers $Headers -Method $Method
         $RawToken = $AuthResponse.authResponse.authToken
+        Write-Debug -Message "API KEY: $RawToken"
         $MaaS360Session.apiKey = ('MaaS token=' + $("""$RawToken""")) | ConvertTo-SecureString -AsPlainText -Force
  
         Write-Debug -Message "URL: $($MaaS360Session.url)"
@@ -94,18 +94,18 @@
 
     if ($Method -eq 'Get')
     {
-        if (($null -eq $MaaS360Session.apiKey))
+        if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.url))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
 
         $TestUrl = $MaaS360Session.url
         $TestEndpoint = $MaaS360Session.endpoint
-        $TestUri = $TestUrl + '/' + $TestEndpoint + '/' + $MaaS360Session.billingID
+        $TestUri = $TestUrl + $TestEndpoint + '/' + $MaaS360Session.billingID
         $Token = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
        
         Write-Debug -Message "URI: $TestUri"
-        Write-Debug -Message "API KEY: $($Token)"
+        Write-Debug -Message "API KEY: $Token"
     }
 
     if (-not (Test-MaaS360PSConnection))
