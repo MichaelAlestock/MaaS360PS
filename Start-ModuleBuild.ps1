@@ -4,9 +4,10 @@ Param(
     [version]$Version,
     [ValidateSet('Major', 'Minor', 'Patch')]
     [string]$BumpVersion,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
     [string]$Path,
-    [string]$Output
+    [string]$Output,
+    [switch]$Update
 )
 
 $ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'MaaS360PS.psd1')
@@ -51,7 +52,7 @@ if ($BumpVersion)
     $Version = $NewVersion
 }
 
-$MaaS360Session = [ordered]@{
+$MaaS360Session = @{
     'url'          = $null
     'endpoint'     = $null
     'platformID'   = $null
@@ -70,9 +71,10 @@ $Parameters = @{
     SourceDirectories = @('en-US/public', 'en-US/private')
     CopyPaths         = @('en-US')
     Version           = $Version
-    Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Global' -Force"
+    Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Script' -Force"
     # UnversionedOutputDirectory = $false
 }
+
 $VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
 
 Write-Verbose -Message 'Importing $VersionSpecificManifest'
@@ -83,15 +85,22 @@ try
 }
 catch
 {
-    Write-Output -InputObject "Unable to import $VersionSpecificManifest"
+    throw "Unable to import $VersionSpecificManifest"
 }
 
-if ((!(Test-Path -Path $Path)) -or ((Get-ChildItem -Path $Path).count -le 0))
+if ($PSBoundParameters.ContainsKey('Path'))
 {
-    New-MarkdownHelp -Module $VersionSpecificManifest -OutputFolder $Path
-    New-ExternalHelp $Path -OutputPath $Output
+    if ((!(Test-Path -Path $Path)) -or ((Get-ChildItem -Path $Path).count -le 0))
+    {
+        New-MarkdownHelp -Module $VersionSpecificManifest -OutputFolder $Path
+        New-ExternalHelp $Path -OutputPath $Output
+    }
+
+    if ($Update.IsPresent)
+    {
+        Update-MarkdownHelp -Path $Path
+    }
 }
 
-Update-MarkdownHelp -Path $Path
 Build-Module @Parameters
 #endregion Build Module
