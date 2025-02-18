@@ -51,6 +51,12 @@
     # $MaaS360Session.apiToken = $null  # Play with this after we make the call and retrieve the API token
     if ($Method -eq 'Post')
     {
+
+        if (-not ((Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
+        {
+            throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
+        }
+
         $Body = @"
         <authRequest>
           <maaS360AdminAuth>
@@ -85,11 +91,13 @@
 
         $AuthResponse = Invoke-RestMethod -Uri $Uri -Body $Body -Headers $Headers -Method $Method
         $RawToken = $AuthResponse.authResponse.authToken
-        Write-Debug -Message "API KEY: $RawToken"
+        Write-Debug -Message "RAW API KEY: $RawToken"
         $MaaS360Session.apiKey = ('MaaS token=' + $("""$RawToken""")) | ConvertTo-SecureString -AsPlainText -Force
  
-        Write-Debug -Message "URL: $($MaaS360Session.url)"
-        Write-Debug -Message "API KEY: $($MaaS360Session.apiKey)"
+        Write-Debug -Message "URI: $($Uri)"
+        Write-Debug -Message "SECURE API KEY: $($MaaS360Session.apiKey)"
+        
+        Write-Output -InputObject 'Successfully obtained API KEY. '
     }
 
     if ($Method -eq 'Get')
@@ -99,17 +107,16 @@
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
 
-        $TestUrl = $MaaS360Session.url
-        $TestEndpoint = $MaaS360Session.endpoint
-        $TestUri = $TestUrl + $TestEndpoint + '/' + $MaaS360Session.billingID
         $Token = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
        
-        Write-Debug -Message "URI: $TestUri"
+        Write-Debug -Message "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
         Write-Debug -Message "API KEY: $Token"
+
+        Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
     }
 
-    if (-not (Test-MaaS360PSConnection))
-    {
-        throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
-    }
+    # if (-not (Test-MaaS360PSConnection))
+    # {
+    #     throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
+    # }
 }
