@@ -42,11 +42,10 @@ function Get-BetterError
                     }
                     Default
                     {
-                        Write-Warning -Message @"
-                        Failure Error Description: $($ErrorDetailsErrorDescription)
-                        Failure Error Status Code: $($ErrorDetailsErrorCode)
+                        Write-Debug -Message @"
+Failure Error Description: $($ErrorDetailsErrorDescription)
+Failure Error Status Code: $($ErrorDetailsErrorCode)
 "@
-                        break
                     }
                 }
                 break

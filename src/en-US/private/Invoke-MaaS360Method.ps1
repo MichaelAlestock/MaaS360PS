@@ -11,16 +11,15 @@ function Invoke-MaaS360Method
     Param(
         [hashtable]$Body,
         [string]$Method,
-        [string]$Url,
-        [string]$Endpoint,
+        [string]$Uri,
         [hashtable]$Headers,
-        [string]$ContentType
+        [string]$ContentType,
+        [string]$Authentication,
+        [securestring]$Token
     )
 
-    $ApiToken = $null
-
     # Maybe we should dynamically build the headers
-    $Headers = [ordered]@{}
+    $Headers = @{}
 
     # Stop any further execution until an API key (session) is created
     if ($null -eq $MaaS360Session.apiKey)
@@ -34,28 +33,25 @@ function Invoke-MaaS360Method
         {
             $Headers.Add('Accept', 'application/json')
             $Headers.Add('Content-Type', 'application/json')
-            $ApiToken = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
             break
         }
         'Post'
         {
             $Headers.Add('Accept', 'application/json')
             $Headers.Add('Content-Type', 'application/x-www-form-urlencoded')
-            $ApiToken = $MaaS360Session.apiKey
             break
         }
         { 'Patch', 'Delete' }
         {
             $Headers.Add('Accept', 'application/json')
             $Headers.Add('Content-Type', 'application/json-patch+json')
-            $ApiToken = $MaaS360Session.apiKey
             break
         }
     }
-    
+
     try
     {
-        $InvokeResponse = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Headers -Body $Body -ContentType $ContentType -Authentication 'Bearer' -Token $ApiToken
+        $InvokeResponse = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Headers -Body $Body -ContentType $ContentType -Authentication $Authentication -Token $Token
 
         $InvokeResponse
     }
