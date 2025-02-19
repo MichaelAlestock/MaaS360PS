@@ -1,53 +1,38 @@
 ---
-external help file: MaaS360PS-help.xml
+external help file: Maas360PS-help.xml
 Module Name: MaaS360PS
 online version:
 schema: 2.0.0
 ---
 
-# Invoke-MaaS360APIRequest
+# Test-MaaS360PSConnection
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+A short one-line action-based description, e.g.
+'Tests if a function is valid'
 
 ## SYNTAX
 
 ```
-Invoke-MaaS360APIRequest [[-Method] <String>] [[-Endpoint] <String>] [[-Headers] <Hashtable>]
- [[-ContentType] <String>] [<CommonParameters>]
+Test-MaaS360PSConnection [[-Url] <String>] [[-Endpoint] <String>] [[-BillingID] <String>] [[-Method] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+A longer description of the function, its purpose, common use cases, etc.
 
 ## EXAMPLES
 
-### Example 1
-```powershell
-PS C:\> {{ Add example code here }}
+### EXAMPLE 1
 ```
-
-{{ Add example description here }}
+Test-MyTestFunction -Verbose
+Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
+```
 
 ## PARAMETERS
 
-### -ContentType
-{{ Fill ContentType Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Endpoint
-{{ Fill Endpoint Description }}
+### -Url
+User instances MaaS360 API base url.
 
 ```yaml
 Type: String
@@ -61,16 +46,31 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Headers
-{{ Fill Headers Description }}
+### -Endpoint
+Endpoint you'd like to interact with
 
 ```yaml
-Type: Hashtable
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BillingID
+{{ Fill BillingID Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -85,7 +85,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -96,11 +111,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
 
-### System.Object
 ## NOTES
+Information or caveats about the function e.g.
+'This function is not supported in Linux'
 
 ## RELATED LINKS
+
+[Specify a URI to a help page, this will show when Get-Help -Online is used.]()
+

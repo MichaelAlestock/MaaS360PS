@@ -9,31 +9,31 @@
 @{
 
     # Script module or binary module file associated with this manifest.
-    # RootModule           = '.\MaaS360PS.psm1'
+    RootModule           = 'Maas360PS.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.1.0'
+    ModuleVersion        = '0.1.1'
 
     # Supported PSEditions
     CompatiblePSEditions = 'Core', 'Desktop'
 
     # ID used to uniquely identify this module
-    GUID = 'bc7bd1e1-c6f8-41d4-8898-5a5529636ffe'
+    GUID                 = 'bc7bd1e1-c6f8-41d4-8898-5a5529636ffe'
 
     # Author of this module
-    Author = 'Anthony Alestock'
+    Author               = 'Anthony Alestock'
 
     # Company or vendor of this module
-    # CompanyName = 'Unknown'
+    CompanyName          = ''
 
     # Copyright statement for this module
-    Copyright = '(c) Anthony Alestock. All rights reserved.'
+    Copyright            = '(c) Anthony Alestock. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'PowerShell API Wrapper for MaaS360'
+    Description          = 'PowerShell API Wrapper for MaaS360'
 
     # Minimum version of the PowerShell engine required by this module
-    PowerShellVersion = '5.1'
+    PowerShellVersion    = '5.1'
 
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
@@ -69,16 +69,16 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @()
+    FunctionsToExport    = @()
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport = @()
+    CmdletsToExport      = @()
 
     # Variables to export from this module
     # VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport = @()
+    AliasesToExport      = @()
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
@@ -90,12 +90,12 @@
     # FileList = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData = @{
+    PrivateData          = @{
 
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = 'MaaS360', 'PowerShell', 'API', 'PSModule'
+            Tags    = 'MaaS360', 'PowerShell', 'API', 'PSModule'
 
             # A URL to the license for this module.
             # LicenseUri = ''
@@ -107,10 +107,10 @@
             IconUri = 'https://raw.githubusercontent.com/PowerShell/PowerShell/refs/heads/master/assets/Powershell_256.png'
 
             # ReleaseNotes of this module
-            #   ReleaseNotes = ''
+            # ReleaseNotes = ''
 
             # Prerelease string of this module
-            #   Prerelease   = ''
+            # Prerelease = ''
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false
@@ -129,3 +129,4 @@
     # DefaultCommandPrefix = ''
 
 }
+

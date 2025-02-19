@@ -15,7 +15,7 @@ Param(
     [switch]$Update
 )
 
-$ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'MaaS360PS.psd1')
+$ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'MaaS360PS.psd1')
 
 [version]$ModuleVersion = (Import-PowerShellDataFile -Path $ManifestPath).ModuleVersion
 $Version = $ModuleVersion
@@ -70,44 +70,34 @@ $MaaS360Session = @{
     'apiKey'       = $null
 }
 
-$PublicSource = Get-ChildItem -
+$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
 
 $Parameters = @{
-    SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'build.psd1')
+    SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'build.psd1')
+    SourceDirectories = @('public', 'private')
     OutputDirectory   = '../output'
-    SourceDirectories = @('en-US/public', 'en-US/private')
-    CopyPaths         = @('en-US')
     Version           = $Version
-    Suffix            = 'Export-ModuleMember -Function ".\src" -Variable MaaS360Session'
+    Suffix            = New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Script' -Force
     Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
 
-$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
+Build-Module @Parameters
 
-Write-Verbose -Message 'Importing $VersionSpecificManifest'
+Import-Module -Name $VersionSpecificManifest
 
-try
+switch ($PSBoundParameters.Keys)
 {
-    Import-Module -Name $VersionSpecificManifest -ErrorAction 'Stop'
-}
-catch
-{
-    throw "Unable to import $VersionSpecificManifest"
-}
-
-if ($PSBoundParameters.ContainsKey('Path'))
-{
-    if ((!(Test-Path -Path $Path)) -or ((Get-ChildItem -Path $Path).count -le 0))
+    { $_ -eq 'Output' }
     {
-        New-MarkdownHelp -Module $VersionSpecificManifest -OutputFolder $Path
+        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
         New-ExternalHelp $Path -OutputPath $Output
+        break
     }
-
-    if ($Update.IsPresent)
+    { $_ -eq 'Update' }
     {
         Update-MarkdownHelp -Path $Path
+        break
     }
 }
-Build-Module @Parameters
 #endregion Build Module

@@ -1,5 +1,5 @@
 ---
-external help file: MaaS360PS-help.xml
+external help file: Maas360PS-help.xml
 Module Name: MaaS360PS
 online version:
 schema: 2.0.0
