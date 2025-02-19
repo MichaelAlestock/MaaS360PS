@@ -70,13 +70,15 @@ $MaaS360Session = @{
     'apiKey'       = $null
 }
 
+$PublicSource = Get-ChildItem -
+
 $Parameters = @{
     SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'build.psd1')
     OutputDirectory   = '../output'
     SourceDirectories = @('en-US/public', 'en-US/private')
     CopyPaths         = @('en-US')
     Version           = $Version
-    Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Script' -Force"
+    Suffix            = 'Export-ModuleMember -Function ".\src" -Variable MaaS360Session'
     Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
