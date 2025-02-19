@@ -19,8 +19,10 @@
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$BillingID,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
+        [ValidateSet('https://apis.m3.maas360.com/')]
         [string]$Url,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
+        [ValidateSet('auth-apis/auth/1.0/authenticate')]
         [string]$Endpoint,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [Parameter(ParameterSetName = 'Connect with API token', Mandatory = $true)]
