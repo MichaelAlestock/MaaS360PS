@@ -6,11 +6,12 @@
       <command:verb>Connect</command:verb>
       <command:noun>MaaS360PS</command:noun>
       <maml:description>
-        <maml:para>A short one-line action-based description, e.g. 'Tests if a function is valid'</maml:para>
+        <maml:para>Retrieve an API key from the MaaS360 web services API.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>A longer description of the function, its purpose, common use cases, etc.</maml:para>
+      <maml:para>The `Connect-MaaS360PS` function retrieves an API key from the MaaS360 web services API.</maml:para>
+      <maml:para>The first time the function is ran, you must utilize the `[POST]` method as well as all applicable parameters to authenticate against MaaS360's endpoint. If you follow-up your initial run with another but utilizing the `[GET]` parameter, you can retrieve information regarding your session.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -18,31 +19,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>BillingID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill BillingID Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Url</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Url Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Endpoint</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Endpoint Description }}</maml:para>
+            <maml:para>Billing number for your MaaS360 account.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -54,7 +31,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Method</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Method Description }}</maml:para>
+            <maml:para>HTTP method used to send a request.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -66,7 +43,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PlatformID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill PlatformID Description }}</maml:para>
+            <maml:para>Identifier for the API platform.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -78,7 +55,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AppID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AppID Description }}</maml:para>
+            <maml:para>Randomly generated identifier granted to user.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -90,7 +67,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AppVersion</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AppVersion Description }}</maml:para>
+            <maml:para>Version of the application in your MaaS360 instance.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -102,7 +79,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>AppAccessKey</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AppAccessKey Description }}</maml:para>
+            <maml:para>Randomly generated identifier usually containing your billing number.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -123,17 +100,16 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
-          <maml:name>ProgressAction</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Result</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ProgressAction Description }}</maml:para>
+            <maml:para>Return more details information regarding your connection.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
           <dev:type>
-            <maml:name>ActionPreference</maml:name>
+            <maml:name>SwitchParameter</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -141,31 +117,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>BillingID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill BillingID Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Url</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Url Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Endpoint</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Endpoint Description }}</maml:para>
+          <maml:para>Billing number for your MaaS360 account.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -177,7 +129,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Method</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Method Description }}</maml:para>
+          <maml:para>HTTP method used to send a request.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -189,7 +141,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PlatformID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill PlatformID Description }}</maml:para>
+          <maml:para>Identifier for the API platform.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -201,7 +153,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AppID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AppID Description }}</maml:para>
+          <maml:para>Randomly generated identifier granted to user.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -213,7 +165,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AppVersion</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AppVersion Description }}</maml:para>
+          <maml:para>Version of the application in your MaaS360 instance.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -225,7 +177,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>AppAccessKey</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AppAccessKey Description }}</maml:para>
+          <maml:para>Randomly generated identifier usually containing your billing number.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -246,6 +198,174 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Result</maml:name>
+        <maml:description>
+          <maml:para>Return more details information regarding your connection.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues />
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>All parameter values can be found in the MaaS360 MDM portal under Setup &gt; Manage Access Key and Setup &gt; Documentation. You must FIRST create an app within the MaaS360 MDM portal before you can obtain most of the required information. You must be an administrator to do so.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Connect-MaaS360PS -PlatformID '0' -BillingID '01234567' -AppID '01234567_beans' -AppVersion '1.0' -AppAccessKey 'bDrt224GZ' -Credentials 'john_bono@u2.music' -Method 'Post'
+
+Initial command that should be run when first connecting to your MaaS360 instance. If an API key is successfully retrieved it will run Test-MaaS360PSConnection to be sure the API key is valid. If the default 'MaaS token=""' is returned, then the command will fail asking the user to run the command again to generate a new API key.</dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Connect-MaaS360PS -Method 'Get'
+
+Retrieving assumed connection status. If the command is ran with the [GET] method before retrieving an API key, the command will fail asking the user to run the command with the [POST] method to retrieve one.</dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-BetterError</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>BetterError</command:noun>
+      <maml:description>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>{{ Fill in the Description }}</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-BetterError</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>ErrorID</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ErrorID Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>ErrorCategory</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ErrorCategory Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>ExceptionMessage</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ExceptionMessage Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>ErrorObject</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ErrorObject Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
+          <maml:name>ProgressAction</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ProgressAction Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
+          <dev:type>
+            <maml:name>ActionPreference</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>ErrorCategory</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ErrorCategory Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>ErrorID</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ErrorID Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>ErrorObject</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ErrorObject Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>ExceptionMessage</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ExceptionMessage Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
         <maml:name>ProgressAction</maml:name>
         <maml:description>
@@ -259,29 +379,41 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
-    <command:inputTypes />
-    <command:returnValues />
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
     <maml:alertSet>
       <maml:alert>
-        <maml:para>Information or caveats about the function e.g. 'This function is not supported in Linux'</maml:para>
+        <maml:para></maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Test-MyTestFunction -Verbose
-Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines</dev:code>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>{{ Add example description here }}</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Specify a URI to a help page, this will show when Get-Help -Online is used.</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
+    <command:relatedLinks />
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -735,11 +867,12 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:verb>Get</command:verb>
       <command:noun>MaaS360User</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Get user(s) from a MaaS360 instance.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The `Get-MaaS360User` function is used to obtain a single, few, or many users from a MaaS360 instance.</maml:para>
+      <maml:para>Without any parameters, this function will return ALL users up to the maximum of 250. Luckily, this number can be limited to improve performance.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -747,7 +880,7 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>IncludeAllUsers</maml:name>
           <maml:description>
-            <maml:para>{{ Fill IncludeAllUsers Description }}</maml:para>
+            <maml:para>Specification of all users should be included.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -759,7 +892,7 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>PageNumber</maml:name>
           <maml:description>
-            <maml:para>{{ Fill PageNumber Description }}</maml:para>
+            <maml:para>Specification of what page number should to be returned.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -771,7 +904,7 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>PageSize</maml:name>
           <maml:description>
-            <maml:para>{{ Fill PageSize Description }}</maml:para>
+            <maml:para>Maximum amount of objects that should be returned at once.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -783,7 +916,8 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>Match</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Match Description }}</maml:para>
+            <maml:para>Specify if the search should be an exact match or a partial match.</maml:para>
+            <maml:para>[0] - Partial match [1] - Exact match</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -795,7 +929,7 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>EmailAddress</maml:name>
           <maml:description>
-            <maml:para>{{ Fill EmailAddress Description }}</maml:para>
+            <maml:para>Email address of the user that should be returned.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -807,7 +941,7 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
           <maml:name>FullName</maml:name>
           <maml:description>
-            <maml:para>{{ Fill FullName Description }}</maml:para>
+            <maml:para>Full name of the user that should be returned.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -819,35 +953,11 @@ Explanation of the function or its result. You can include multiple examples wit
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>Username</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Username Description }}</maml:para>
+            <maml:para>Username of the user being searched for.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
-          <maml:name>Endpoint</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Endpoint Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
-          <maml:name>ProgressAction</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill ProgressAction Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
-          <dev:type>
-            <maml:name>ActionPreference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -858,19 +968,7 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>EmailAddress</maml:name>
         <maml:description>
-          <maml:para>{{ Fill EmailAddress Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
-        <maml:name>Endpoint</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Endpoint Description }}</maml:para>
+          <maml:para>Email address of the user that should be returned.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -882,7 +980,7 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
         <maml:name>FullName</maml:name>
         <maml:description>
-          <maml:para>{{ Fill FullName Description }}</maml:para>
+          <maml:para>Full name of the user that should be returned.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -894,7 +992,7 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>IncludeAllUsers</maml:name>
         <maml:description>
-          <maml:para>{{ Fill IncludeAllUsers Description }}</maml:para>
+          <maml:para>Specification of all users should be included.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -906,7 +1004,8 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>Match</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Match Description }}</maml:para>
+          <maml:para>Specify if the search should be an exact match or a partial match.</maml:para>
+          <maml:para>[0] - Partial match [1] - Exact match</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -918,7 +1017,7 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>PageNumber</maml:name>
         <maml:description>
-          <maml:para>{{ Fill PageNumber Description }}</maml:para>
+          <maml:para>Specification of what page number should to be returned.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -930,7 +1029,7 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>PageSize</maml:name>
         <maml:description>
-          <maml:para>{{ Fill PageSize Description }}</maml:para>
+          <maml:para>Maximum amount of objects that should be returned at once.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -942,23 +1041,11 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
         <maml:name>Username</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Username Description }}</maml:para>
+          <maml:para>Username of the user being searched for.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
-        <maml:name>ProgressAction</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill ProgressAction Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
-        <dev:type>
-          <maml:name>ActionPreference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -992,12 +1079,218 @@ Explanation of the function or its result. You can include multiple examples wit
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Get-MaaS360User -EmailAddress 'jim_bean@drinks.net'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns info relating to the user Jim Bean.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Invoke-MaaS360Method</command:name>
+      <command:verb>Invoke</command:verb>
+      <command:noun>MaaS360Method</command:noun>
+      <maml:description>
+        <maml:para>Alternative to `Invoke-RestMethod` to send an HTTP request.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `Invoke-MaaS360Method` function is used internally by other functions to handle the HTTP request instead of utilizing `Invoke-RestMethod`.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-MaaS360Method</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>Data being sent via POST or PATCH.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>Method</maml:name>
+          <maml:description>
+            <maml:para>HTTP method used to send a request.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Uri</maml:name>
+          <maml:description>
+            <maml:para>Full URL that the request is being sent to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>Headers</maml:name>
+          <maml:description>
+            <maml:para>HTTP headers used in the request.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>ContentType</maml:name>
+          <maml:description>
+            <maml:para>Used for POST requests where form data is usually sent instead of JSON.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>Authentication</maml:name>
+          <maml:description>
+            <maml:para>Authentication method used.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+          <maml:name>Token</maml:name>
+          <maml:description>
+            <maml:para>API token being sent in the request.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">SecureString</command:parameterValue>
+          <dev:type>
+            <maml:name>SecureString</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>Authentication</maml:name>
+        <maml:description>
+          <maml:para>Authentication method used.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:description>
+          <maml:para>Data being sent via POST or PATCH.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>ContentType</maml:name>
+        <maml:description>
+          <maml:para>Used for POST requests where form data is usually sent instead of JSON.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>Headers</maml:name>
+        <maml:description>
+          <maml:para>HTTP headers used in the request.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>Method</maml:name>
+        <maml:description>
+          <maml:para>HTTP method used to send a request.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <maml:name>Token</maml:name>
+        <maml:description>
+          <maml:para>API token being sent in the request.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">SecureString</command:parameterValue>
+        <dev:type>
+          <maml:name>SecureString</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Uri</maml:name>
+        <maml:description>
+          <maml:para>Full URL that the request is being sent to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples />
     <command:relatedLinks />
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -1181,19 +1474,19 @@ Explanation of the function or its result. You can include multiple examples wit
       <command:verb>Test</command:verb>
       <command:noun>MaaS360PSConnection</command:noun>
       <maml:description>
-        <maml:para>A short one-line action-based description, e.g. 'Tests if a function is valid'</maml:para>
+        <maml:para>Test connection to a MaaS360 instance.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>A longer description of the function, its purpose, common use cases, etc.</maml:para>
+      <maml:para>The `Test-MaaS360PSConnection` function is used to test your connection to a MaaS360 instance utilizing the API key obtained from `Connect-MaaS360PS`. No information is actually formatted or worked on since the main goal is to return `true` if the connection was successful or `false` if it was unsuccessful. Although this function can be used separately, it's used inside of `Connect-MaaS360PS` to validate connection status upon completion.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Test-MaaS360PSConnection</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>Url</maml:name>
+          <maml:name>BillingID</maml:name>
           <maml:description>
-            <maml:para>User instances MaaS360 API base url.</maml:para>
+            <maml:para>The billing number of your MaaS360 account.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -1203,49 +1496,13 @@ Explanation of the function or its result. You can include multiple examples wit
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>Endpoint</maml:name>
-          <maml:description>
-            <maml:para>Endpoint you'd like to interact with</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>BillingID</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill BillingID Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>Method</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Method Description }}</maml:para>
+            <maml:para>HTTP method used to send a request.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
-          <maml:name>ProgressAction</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill ProgressAction Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
-          <dev:type>
-            <maml:name>ActionPreference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1254,9 +1511,9 @@ Explanation of the function or its result. You can include multiple examples wit
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Url</maml:name>
+        <maml:name>BillingID</maml:name>
         <maml:description>
-          <maml:para>User instances MaaS360 API base url.</maml:para>
+          <maml:para>The billing number of your MaaS360 account.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -1266,49 +1523,13 @@ Explanation of the function or its result. You can include multiple examples wit
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>Endpoint</maml:name>
-        <maml:description>
-          <maml:para>Endpoint you'd like to interact with</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>BillingID</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill BillingID Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>Method</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Method Description }}</maml:para>
+          <maml:para>HTTP method used to send a request.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
-        <maml:name>ProgressAction</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill ProgressAction Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">ActionPreference</command:parameterValue>
-        <dev:type>
-          <maml:name>ActionPreference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1318,24 +1539,28 @@ Explanation of the function or its result. You can include multiple examples wit
     <command:returnValues />
     <maml:alertSet>
       <maml:alert>
-        <maml:para>Information or caveats about the function e.g. 'This function is not supported in Linux'</maml:para>
+        <maml:para>All parameter values can be found in the MaaS360 MDM portal under Setup &gt; Manage Access Key and Setup &gt; Documentation. You must FIRST create an app within the MaaS360 MDM portal before you can obtain most of the required information. You must be an administrator to do so.</maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Test-MyTestFunction -Verbose
-Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines</dev:code>
+        <dev:code>Test-MaaS360PSConnection -BillingID '01234567' -Method 'Get' -Verbose -Debug
+
+DEBUG: URI: https://apis.m3.maas360.com/user-apis/user/1.0/search/01234567
+DEBUG: TOKENIZED API KEY: MaaS token="4b517b17-d245-443b-9bbd-698773d19f9a-lbfa8j"
+VERBOSE: Requested HTTP/1.1 GET with 0-byte payload
+VERBOSE: Received HTTP/1.1 response of content type application/json of unknown size
+VERBOSE: Content encoding: utf-8
+DEBUG: Debug response: @{users=}
+DEBUG: Connection to [https://apis.m3.maas360.com/user-apis/user/1.0/search/01234567] successful.
+
+True</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks>
-      <maml:navigationLink>
-        <maml:linkText>Specify a URI to a help page, this will show when Get-Help -Online is used.</maml:linkText>
-        <maml:uri></maml:uri>
-      </maml:navigationLink>
-    </command:relatedLinks>
+    <command:relatedLinks />
   </command:command>
 </helpItems>

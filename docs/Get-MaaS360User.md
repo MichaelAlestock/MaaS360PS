@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-MaaS360User
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Get user(s) from a MaaS360 instance.
 
 ## SYNTAX
 
@@ -18,21 +18,24 @@ Get-MaaS360User [[-IncludeAllUsers] <Int32>] [[-PageNumber] <Int32>] [[-PageSize
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+The `Get-MaaS360User` function is used to obtain a single, few, or many users from a MaaS360 instance.
+
+Without any parameters, this function will return ALL users up to the maximum of 250. Luckily, this number can be
+limited to improve performance. 
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+Get-MaaS360User -EmailAddress 'jim_bean@drinks.net'
 ```
 
-{{ Add example description here }}
+Returns info relating to the user Jim Bean.
 
 ## PARAMETERS
 
 ### -EmailAddress
-{{ Fill EmailAddress Description }}
+Email address of the user that should be returned.
 
 ```yaml
 Type: String
@@ -47,7 +50,7 @@ Accept wildcard characters: False
 ```
 
 ### -FullName
-{{ Fill FullName Description }}
+Full name of the user that should be returned.
 
 ```yaml
 Type: String
@@ -62,7 +65,7 @@ Accept wildcard characters: False
 ```
 
 ### -IncludeAllUsers
-{{ Fill IncludeAllUsers Description }}
+Specification of all users should be included. 
 
 ```yaml
 Type: Int32
@@ -77,7 +80,10 @@ Accept wildcard characters: False
 ```
 
 ### -Match
-{{ Fill Match Description }}
+Specify if the search should be an exact match or a partial match.
+
+[0] - Partial match
+[1] - Exact match
 
 ```yaml
 Type: Int32
@@ -92,7 +98,7 @@ Accept wildcard characters: False
 ```
 
 ### -PageNumber
-{{ Fill PageNumber Description }}
+Specification of what page number should to be returned.
 
 ```yaml
 Type: Int32
@@ -107,7 +113,7 @@ Accept wildcard characters: False
 ```
 
 ### -PageSize
-{{ Fill PageSize Description }}
+Maximum amount of objects that should be returned at once.
 
 ```yaml
 Type: Int32
@@ -122,7 +128,7 @@ Accept wildcard characters: False
 ```
 
 ### -Username
-{{ Fill Username Description }}
+Username of the user being searched for.
 
 ```yaml
 Type: String
@@ -146,6 +152,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
