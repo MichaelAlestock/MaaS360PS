@@ -6,35 +6,33 @@ A PowerShell API wrapper for the [IBM MaaS360 Web Services API](https://www.ibm.
 
 
 > :warning: **_WARNING_**: **This is a work-in-progress and a complete rewrite of my original idea. Most functions are will not work for 
-> a few updates since they followed old design ideas. Please take this into account before cloning.  If you have any issues please utilize the Github Issues or submit a pull request.**
-
----
+> a few updates since they followed old design ideas. Please take this into account before cloning.  If you have any issues please utilize the Github Issues or submit a pull request. You can also feel free to contact me on PowerShell Gallery to report issues and I will manually open an issue for you.**
 
 ## Installation
 
 ```powershell
-
-# Step 1. Install module from PowerShell Gallery via PowerShellGet
-
 Install-Module -Name 'MaaS360PS'
+```
 
-# Step 2. Create a session to generate an API key
+## Usage
 
-# NOTE: All parameters values are found in the MaaS360 portal under Setup > Documentation.
+> **_NOTE_** : All values for parameters are found in the MaaS360 portal under Setup > Documentation.
 
-Connect-MaaS360PS -platformID '0' -BillingID '0123456789' -AppID '01234567_apple' -AppVersion '1.0' `
+```powershell
+# Retrieving an API key from MaaS360
+Connect-MaaS360PS -PlatformID '0' -BillingID '0123456789' -AppID '01234567_apple' -AppVersion '1.0' `
 -AppAccessKey 'cIENUGZ' -Credentials 'your_email_address' -Method 'Post'
 
-# Returns 'assumed successful' but the -Result switch can show more detail
+# Returns 'assumed successful' but the -Result switch can show more detail.
 Connect-MaaS360PS -Method 'Get'
 
-# View details regarding your session such as [API KEY] and complete [URI]
+# View details regarding your session such as [API KEY] and complete [URI].
 Connect-MaaS360PS -Method 'Get' -Result
 
-# Step 3 (optional). Test your connection to MaaS360 with the supplied API key.
-Test-MaaS360PSConnection -Url https://apis.m3.maas360.com/ -Endpoint user-apis/user/1.0/search/ -BillingID '0123456789' -Method 'Get'
+# OPTIONAL: Test your connection to MaaS360 with the retrieved API key.
+Test-MaaS360PSConnection -BillingID '0123456789' -Method 'Get'
 
-# Example Connect-MaaS360PS with [-DEBUG] and [-VERBOSE] for full visual of the command.
+# EXAMPLE: Connect-MaaS360PS with [-DEBUG] and [-VERBOSE] for full visual of the command output.
 # [API KEY] and [BILLING ID] are not real
 
 ---
@@ -56,11 +54,9 @@ DEBUG: Connection to [https://apis.m3.maas360.com/user-apis/user/1.0/search/0123
 Connection to your MaaS360 instance is fully confirmed. Feel free to use all commands.
 
 ---
-
 ```
 
-## Usage
-
+## Help
 ```powershell
 
 # Utilize PowerShell's discoverability to learn more about functions and their usages.
