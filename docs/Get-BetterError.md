@@ -5,34 +5,34 @@ online version:
 schema: 2.0.0
 ---
 
-# Test-MaaS360PSConnection
+# Get-BetterError
 
 ## SYNOPSIS
-A short one-line action-based description, e.g.
-'Tests if a function is valid'
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
 ```
-Test-MaaS360PSConnection [[-BillingID] <String>] [[-Method] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-BetterError [[-ErrorID] <String>] [[-ErrorCategory] <String>] [[-ExceptionMessage] <String>]
+ [[-ErrorObject] <Object>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-A longer description of the function, its purpose, common use cases, etc.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Test-MyTestFunction -Verbose
-Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -BillingID
-{{ Fill BillingID Description }}
+### -ErrorCategory
+{{ Fill ErrorCategory Description }}
 
 ```yaml
 Type: String
@@ -46,8 +46,38 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Method
-{{ Fill Method Description }}
+### -ErrorID
+{{ Fill ErrorID Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ErrorObject
+{{ Fill ErrorObject Description }}
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExceptionMessage
+{{ Fill ExceptionMessage Description }}
 
 ```yaml
 Type: String
@@ -81,13 +111,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
-Information or caveats about the function e.g.
-'This function is not supported in Linux'
 
 ## RELATED LINKS
-
-[Specify a URI to a help page, this will show when Get-Help -Online is used.]()
-

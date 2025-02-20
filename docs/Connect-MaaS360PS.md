@@ -1,5 +1,5 @@
 ---
-external help file: Maas360PS-help.xml
+external help file: MaaS360PS-help.xml
 Module Name: MaaS360PS
 online version:
 schema: 2.0.0
@@ -15,13 +15,13 @@ A short one-line action-based description, e.g.
 
 ### Connect with API token (Default)
 ```
-Connect-MaaS360PS -Method <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Connect-MaaS360PS -Method <String> [-Result] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### New API token
 ```
-Connect-MaaS360PS -BillingID <String> -Url <String> -Endpoint <String> -Method <String> -PlatformID <String>
- -AppID <String> -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential>
+Connect-MaaS360PS -BillingID <String> -Method <String> -PlatformID <String> -AppID <String>
+ -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential> [-Result]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -40,36 +40,6 @@ Explanation of the function or its result. You can include multiple examples wit
 
 ### -BillingID
 {{ Fill BillingID Description }}
-
-```yaml
-Type: String
-Parameter Sets: New API token
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Url
-{{ Fill Url Description }}
-
-```yaml
-Type: String
-Parameter Sets: New API token
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Endpoint
-{{ Fill Endpoint Description }}
 
 ```yaml
 Type: String
@@ -169,6 +139,21 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Result
+{{ Fill Result Description }}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

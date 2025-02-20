@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-MaaS360User
+# Invoke-MaaS360Method
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-MaaS360User [[-IncludeAllUsers] <Int32>] [[-PageNumber] <Int32>] [[-PageSize] <Int32>] [[-Match] <Int32>]
- [[-EmailAddress] <String>] [[-FullName] <String>] [[-Username] <String>] [<CommonParameters>]
+Invoke-MaaS360Method [[-Body] <Hashtable>] [[-Method] <String>] [[-Uri] <String>] [[-Headers] <Hashtable>]
+ [[-ContentType] <String>] [[-Authentication] <String>] [[-Token] <SecureString>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,23 +32,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -EmailAddress
-{{ Fill EmailAddress Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -FullName
-{{ Fill FullName Description }}
+### -Authentication
+{{ Fill Authentication Description }}
 
 ```yaml
 Type: String
@@ -61,11 +47,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -IncludeAllUsers
-{{ Fill IncludeAllUsers Description }}
+### -Body
+{{ Fill Body Description }}
 
 ```yaml
-Type: Int32
+Type: Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -76,11 +62,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Match
-{{ Fill Match Description }}
+### -ContentType
+{{ Fill ContentType Description }}
 
 ```yaml
-Type: Int32
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Headers
+{{ Fill Headers Description }}
+
+```yaml
+Type: Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -91,11 +92,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PageNumber
-{{ Fill PageNumber Description }}
+### -Method
+{{ Fill Method Description }}
 
 ```yaml
-Type: Int32
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -106,11 +107,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PageSize
-{{ Fill PageSize Description }}
+### -Token
+{{ Fill Token Description }}
 
 ```yaml
-Type: Int32
+Type: SecureString
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Uri
+{{ Fill Uri Description }}
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -121,16 +137,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Username
-{{ Fill Username Description }}
+### -ProgressAction
+{{ Fill ProgressAction Description }}
 
 ```yaml
-Type: String
+Type: ActionPreference
 Parameter Sets: (All)
-Aliases:
+Aliases: proga
 
 Required: False
-Position: 6
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

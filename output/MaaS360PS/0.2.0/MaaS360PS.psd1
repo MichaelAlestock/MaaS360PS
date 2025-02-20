@@ -69,7 +69,7 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport    = @()
+    FunctionsToExport    = @('Connect-MaaS360PS','Get-GNMaaS360Device','Get-MaaS360Device','Get-MaaS360DeviceBasic','Get-MaaS360User','New-MaaS360User','Test-MaaS360PSConnection')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
@@ -129,4 +129,3 @@
     # DefaultCommandPrefix = ''
 
 }
-

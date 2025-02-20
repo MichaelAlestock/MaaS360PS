@@ -22,11 +22,11 @@ $ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'MaaS360PS.ps
 [version]$ModuleVersion = (Import-PowerShellDataFile -Path $ManifestPath).ModuleVersion
 $Version = $ModuleVersion
 
-$Major = $ModuleVersion.Major
-$Minor = $ModuleVersion.Minor
-$Patch = $ModuleVersion.Build
+$Major = $Version.Major
+$Minor = $Version.Minor
+$Patch = $Version.Build
 
-if ($BumpVersion)
+if ($PSBoundParameters.ContainsKey('BumpVersion'))
 {
     switch ($BumpVersion)
     {
@@ -55,11 +55,11 @@ if ($BumpVersion)
 
     $NewVersion = [version]::new($Major, $Minor, $Patch)
     Write-Verbose -Message "Bumping module version to [$NewVersion]"
-    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $NewVersion
+    Update-ModuleManifest -Path '.\source\MaaS360PS.psd1' -ModuleVersion $NewVersion
     $Version = $NewVersion
 }
 
-$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
+$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psd1')
 
 $Parameters = @{
     SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'build.psd1')

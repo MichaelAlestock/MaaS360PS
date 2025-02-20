@@ -75,7 +75,7 @@
     CmdletsToExport      = @()
 
     # Variables to export from this module
-    # VariablesToExport = @()
+    # VariablesToExport    = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport      = @()
@@ -95,19 +95,19 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags    = 'MaaS360', 'PowerShell', 'API', 'PSModule'
+            Tags         = 'MaaS360', 'PowerShell', 'API', 'PSModule'
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri   = 'https://github.com/MichaelAlestock/MaaS360PS/blob/master/LICENSE'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri   = 'https://github.com/MichaelAlestock/MaaS360PS'
 
             # A URL to an icon representing this module.
-            IconUri = 'https://raw.githubusercontent.com/PowerShell/PowerShell/refs/heads/master/assets/Powershell_256.png'
+            IconUri      = 'https://raw.githubusercontent.com/MichaelAlestock/MaaS360PS/refs/heads/development/assets/PowerShell%20Dracula%20Logo.png'
 
             # ReleaseNotes of this module
-            # ReleaseNotes = ''
+            ReleaseNotes = 'https://github.com/MichaelAlestock/MaaS360PS/blob/master/CHANGELOG.md'
 
             # Prerelease string of this module
             # Prerelease = ''
