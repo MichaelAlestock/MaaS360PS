@@ -1,24 +1,32 @@
 #region Build Module
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = 'Markdown help files')]
 Param(
+    [Parameter(ParameterSetName = 'Control version')]
     [version]$Version,
+    [Parameter(ParameterSetName = 'Control version')]
     [ValidateSet('Major', 'Minor', 'Patch')]
     [string]$BumpVersion,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
+    [Parameter(ParameterSetName = 'Markdown help files')]
     [string]$Path,
-    [string]$Output
+    [Parameter(ParameterSetName = 'Markdown help files')]
+    [string]$Output,
+    [Parameter(ParameterSetName = 'Markdown help files')]
+    [switch]$Update,
+    [Parameter(ParameterSetName = 'Build')]
+    [switch]$Build
 )
 
-$ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'MaaS360PS.psd1')
+$ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'MaaS360PS.psd1')
 
 [version]$ModuleVersion = (Import-PowerShellDataFile -Path $ManifestPath).ModuleVersion
 $Version = $ModuleVersion
 
-$Major = $ModuleVersion.Major
-$Minor = $ModuleVersion.Minor
-$Patch = $ModuleVersion.Build
+$Major = $Version.Major
+$Minor = $Version.Minor
+$Patch = $Version.Build
 
-if ($BumpVersion)
+if ($PSBoundParameters.ContainsKey('BumpVersion'))
 {
     switch ($BumpVersion)
     {
@@ -47,51 +55,48 @@ if ($BumpVersion)
 
     $NewVersion = [version]::new($Major, $Minor, $Patch)
     Write-Verbose -Message "Bumping module version to [$NewVersion]"
-    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $NewVersion
+    Update-ModuleManifest -Path '.\source\MaaS360PS.psd1' -ModuleVersion $NewVersion
     $Version = $NewVersion
 }
 
-$MaaS360Session = [ordered]@{
-    'url'          = $null
-    'endpoint'     = $null
-    'platformID'   = $null
-    'billingID'    = $null
-    'userName'     = $null
-    'password'     = $null
-    'appID'        = $null
-    'appVersion'   = $null
-    'appAccessKey' = $null 
-    'apiKey'       = $null
-}
+$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psd1')
 
 $Parameters = @{
-    SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'src', 'build.psd1')
+    SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'build.psd1')
+    SourceDirectories = @('public', 'private')
     OutputDirectory   = '../output'
-    SourceDirectories = @('en-US/public', 'en-US/private')
-    CopyPaths         = @('en-US')
     Version           = $Version
-    Suffix            = "New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Global' -Force"
+    Prefix            = "New-Variable -Name 'MaaS360Session' -Value @{
+    'url' = ''; 'endpoint' = ''; 'platformID' = ''; 'billingID' = ''; 'userName' = ''; 'password' = ''; 'appID' = ''; 'appVersion' = '' ; 'appAccessKey' = '' ; 'apiKey' = '' ; 'tempHeaders' = @{} ; 'baseUrl' = 'https://apis.m3.maas360.com/' ; 'authEndpoint' = 'auth-apis/auth/1.0/authenticate'
+} -Scope 'Global' -Force"
+    Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
-$VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
 
-Write-Verbose -Message 'Importing $VersionSpecificManifest'
-
-try
+switch ($PSBoundParameters.Keys)
 {
-    Import-Module -Name $VersionSpecificManifest -ErrorAction 'Stop'
+    'Build'
+    {
+        Build-Module @Parameters
+        break
+    }
+    'Output'
+    {
+        Import-Module -Name $VersionSpecificManifest
+        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
+        New-MarkdownAboutHelp -OutputFolder $Output -AboutName 'about_MaaS360PS'
+        New-ExternalHelp $Path -OutputPath $Output
+        break
+    }
+    'Update'
+    {
+        Import-Module -Name $VersionSpecificManifest
+        Update-MarkdownHelp -Path $Path
+        break
+    }
+    'Default'
+    {
+        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] parameter.'
+    }
 }
-catch
-{
-    Write-Output -InputObject "Unable to import $VersionSpecificManifest"
-}
-
-if ((!(Test-Path -Path $Path)) -or ((Get-ChildItem -Path $Path).count -le 0))
-{
-    New-MarkdownHelp -Module $VersionSpecificManifest -OutputFolder $Path
-    New-ExternalHelp $Path -OutputPath $Output
-}
-
-Update-MarkdownHelp -Path $Path
-Build-Module @Parameters
 #endregion Build Module

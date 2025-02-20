@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Test-MaaS30PSConnection
+# Get-BetterError
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Test-MaaS30PSConnection [[-Uri] <Uri>] [[-BillingID] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-BetterError [[-ErrorID] <String>] [[-ErrorCategory] <String>] [[-ExceptionMessage] <String>]
+ [[-ErrorObject] <Object>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,8 +31,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -BillingID
-{{ Fill BillingID Description }}
+### -ErrorCategory
+{{ Fill ErrorCategory Description }}
 
 ```yaml
 Type: String
@@ -46,16 +46,46 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Uri
-{{ Fill Uri Description }}
+### -ErrorID
+{{ Fill ErrorID Description }}
 
 ```yaml
-Type: Uri
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ErrorObject
+{{ Fill ErrorObject Description }}
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExceptionMessage
+{{ Fill ExceptionMessage Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

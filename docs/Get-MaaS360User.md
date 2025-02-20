@@ -12,18 +12,9 @@ schema: 2.0.0
 
 ## SYNTAX
 
-### PartialMatch (Default)
 ```
-Get-MaaS360User [-IncludeAllUsers <Int32>] [-PageNumber <Int32>] [-PageSize <Int32>] [[-PartialMatch] <Int32>]
- [[-PartialEmailAddress] <String>] [-FullName <String>] [-Username <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### ExactMatch
-```
-Get-MaaS360User [-IncludeAllUsers <Int32>] [-PageNumber <Int32>] [-PageSize <Int32>] [-ExactMatch <Int32>]
- [-EmailAddress <String>] [-FullName <String>] [-Username <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-MaaS360User [[-IncludeAllUsers] <Int32>] [[-PageNumber] <Int32>] [[-PageSize] <Int32>] [[-Match] <Int32>]
+ [[-EmailAddress] <String>] [[-FullName] <String>] [[-Username] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,27 +36,11 @@ PS C:\> {{ Add example code here }}
 
 ```yaml
 Type: String
-Parameter Sets: ExactMatch
+Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ExactMatch
-{{ Fill ExactMatch Description }}
-
-```yaml
-Type: Int32
-Parameter Sets: ExactMatch
-Aliases:
-Accepted values: 1
-
-Required: False
-Position: Named
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -77,10 +52,10 @@ Accept wildcard characters: False
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: PartialFullUserName
+Aliases:
 
 Required: False
-Position: Named
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -93,10 +68,24 @@ Accept wildcard characters: False
 Type: Int32
 Parameter Sets: (All)
 Aliases:
-Accepted values: 0, 1, 2
 
 Required: False
-Position: Named
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Match
+{{ Fill Match Description }}
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -111,7 +100,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -124,41 +113,9 @@ Accept wildcard characters: False
 Type: Int32
 Parameter Sets: (All)
 Aliases:
-Accepted values: 25, 50, 100, 200, 250
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PartialEmailAddress
-{{ Fill PartialEmailAddress Description }}
-
-```yaml
-Type: String
-Parameter Sets: PartialMatch
-Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PartialMatch
-{{ Fill PartialMatch Description }}
-
-```yaml
-Type: Int32
-Parameter Sets: PartialMatch
-Aliases:
-Accepted values: 0
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -169,38 +126,11 @@ Accept wildcard characters: False
 
 ```yaml
 Type: String
-Parameter Sets: PartialMatch
-Aliases: PartialUserName
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-```yaml
-Type: String
-Parameter Sets: ExactMatch
-Aliases: PartialUserName
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: ActionPreference
 Parameter Sets: (All)
-Aliases: proga
+Aliases:
 
 Required: False
-Position: Named
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -211,7 +141,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
+### None
 
 ## OUTPUTS
 
