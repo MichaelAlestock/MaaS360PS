@@ -18,45 +18,54 @@ function Invoke-MaaS360Method
         [securestring]$Token
     )
 
-    # Maybe we should dynamically build the headers
-    $Headers = @{}
-
     # Stop any further execution until an API key (session) is created
     if ($null -eq $MaaS360Session.apiKey)
     {
         throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
     }
 
-    switch ($Method)
+    # Make sure the headers hash is empty before trying to shove more stuff into it
+    if ($MaaS360Session.tempHeaders.Count -eq 0)
     {
-        'Get'
+        switch ($Method)
         {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/json')
-            break
-        }
-        'Post'
-        {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/x-www-form-urlencoded')
-            break
-        }
-        { 'Patch', 'Delete' }
-        {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/json-patch+json')
-            break
+            'Get'
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/json')
+                break
+            }
+            'Post'
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/x-www-form-urlencoded')
+                break
+            }
+            { 'Patch', 'Delete' }
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/json-patch+json')
+                break
+            }
         }
     }
+   
 
+    # Maybe we should dynamically build the headers ^^
+    $Headers = $MaaS360Session.tempHeaders
+    
     try
     {
+        # Not sure if smart to keep it out in the open like this instead of behind a variable
         $InvokeResponse = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Headers -Body $Body -ContentType $ContentType -Authentication $Authentication -Token $Token
 
         $InvokeResponse
+        # Clear to avoid potential errors in subsequent calls
+        $MaaS360Session.tempHeaders.Clear()
     }
     catch
     {
+        # Just the basics for right now
         $_.ErrorDetails.Message
         $_.Exception.Message
     }

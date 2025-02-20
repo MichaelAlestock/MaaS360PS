@@ -1,4 +1,10 @@
-﻿#Region '.\public\Connect-MaaS360PS.ps1' -1
+﻿#Region 'PREFIX' -1
+
+New-Variable -Name 'MaaS360Session' -Value @{
+    'url' = ''; 'endpoint' = ''; 'platformID' = ''; 'billingID' = ''; 'userName' = ''; 'password' = ''; 'appID' = ''; 'appVersion' = '' ; 'appAccessKey' = '' ; 'apiKey' = '' ; 'tempHeaders' = @{}
+} -Scope 'Global' -Force
+#EndRegion 'PREFIX'
+#Region '.\public\Connect-MaaS360PS.ps1' -1
 
 function Connect-MaaS360PS
 {
@@ -8,7 +14,10 @@ function Connect-MaaS360PS
     .DESCRIPTION
         A longer description of the function, its purpose, common use cases, etc.
     .NOTES
-        Information or caveats about the function e.g. 'This function is not supported in Linux'
+        Bugs to fix:
+            - Receive a success message when getting trying to receive a token even when using incorrect info
+            - Always fails the first auth attempt even when info is correct and succeeds on the next attempt
+                - Annoyance for now
     .LINK
         Specify a URI to a help page, this will show when Get-Help -Online is used.
     .EXAMPLE
@@ -40,7 +49,8 @@ function Connect-MaaS360PS
         [string]$AppAccessKey,
         [Parameter(HelpMessage = 'Enter same credentials utilized to log into MaaS360 web portal.',
             ParameterSetName = 'New API token', Mandatory = $true)]
-        [PSCredential]$Credentials
+        [PSCredential]$Credentials,
+        [switch]$Result
     )
 
     # We need to get an auth token from MaaS360 before we can do anything which means we need to utilize all params and make an API call
@@ -61,20 +71,6 @@ function Connect-MaaS360PS
             throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
         }
 
-        $Body = @"
-        <authRequest>
-          <maaS360AdminAuth>
-              <platformID>$($MaaS360Session.platformID)</platformID>
-              <billingID>$($MaaS360Session.billingID)</billingID>
-              <password>$($MaaS360Session.password)</password>
-              <userName>$($MaaS360Session.userName)</userName>
-              <appID>$($MaaS360Session.appID)</appID>
-              <appVersion>$($MaaS360Session.appVersion)</appVersion>
-              <appAccessKey>$($MaaS360Session.appAccessKey)</appAccessKey>
-          </maaS360AdminAuth>
-        </authRequest>
-"@
-
         $Headers = @{
             'Accept'       = 'application/json'
             'Content-Type' = 'application/xml'
@@ -91,7 +87,21 @@ function Connect-MaaS360PS
         $MaaS360Session.appVersion = $AppVersion
         $MaaS360Session.appAccessKey = $AppAccessKey
 
-        $Script:Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
+        $Body = @"
+        <authRequest>
+          <maaS360AdminAuth>
+              <platformID>$($MaaS360Session.platformID)</platformID>
+              <billingID>$($MaaS360Session.billingID)</billingID>
+              <password>$($MaaS360Session.password)</password>
+              <userName>$($MaaS360Session.userName)</userName>
+              <appID>$($MaaS360Session.appID)</appID>
+              <appVersion>$($MaaS360Session.appVersion)</appVersion>
+              <appAccessKey>$($MaaS360Session.appAccessKey)</appAccessKey>
+          </maaS360AdminAuth>
+        </authRequest>
+"@
+
+        $Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
 
         $AuthResponse = Invoke-RestMethod -Uri $Uri -Body $Body -Headers $Headers -Method $Method
         $RawToken = $AuthResponse.authResponse.authToken
@@ -100,22 +110,32 @@ function Connect-MaaS360PS
  
         Write-Debug -Message "URI: $($Uri)"
         Write-Debug -Message "SECURE API KEY: $($MaaS360Session.apiKey)"
+
+        if (($MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText) -eq 'MaaS token=""')
+        {
+            Write-Debug -Message "RAW API KEY FIELD IS EMPTY: [$($MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText)] instead of [MaaS token='your_token_here']"
+
+            throw 'Something went wrong, [API KEY] was not retrieved. Please check parameter values to be sure all info is correct or run the command with the -Debug parameter to get more info.'
+        }
         
         Write-Output -InputObject 'Successfully obtained API KEY. '
     }
 
     if ($Method -eq 'Get')
     {
-        if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.url))
+        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.url -eq ''))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
 
         $Token = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
-       
-        Write-Debug -Message "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
-        Write-Debug -Message "API KEY: $Token"
 
+        if ($Result.IsPresent)
+        {
+            Write-Output -InputObject "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
+            Write-Output -InputObject "API KEY: $Token"
+        }
+       
         Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
     }
 
@@ -124,7 +144,7 @@ function Connect-MaaS360PS
     #     throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
     # }
 }
-#EndRegion '.\public\Connect-MaaS360PS.ps1' 125
+#EndRegion '.\public\Connect-MaaS360PS.ps1' 139
 #Region '.\public\Get-GNMaaS360Device.ps1' -1
 
 function Get-MaaS360Device
@@ -451,13 +471,8 @@ function Get-MaaS360DeviceBasic
 #EndRegion '.\public\Get-MaaS360DeviceBasic.ps1' 74
 #Region '.\public\Get-MaaS360User.ps1' -1
 
-$TestEndpoint = 'user-apis/user/1.0/search/'
-
 function Get-MaaS360User
 {
-
-  [CmdletBinding(DefaultParameterSetName = 'PartialMatch')]
-
   Param(
     [int]$IncludeAllUsers,
     [int]$PageNumber,
@@ -468,14 +483,16 @@ function Get-MaaS360User
     [string]$Username,
     [string]$Endpoint
   )
-
-  # Testing purposes
-  if ($null -ne $TestEndpoint)
-  {
-    $Endpoint = $TestEndpoint
-  }
  
-  $Uri = $MaaS360Session.url + $Endpoint + $MaaS360Session.billingID
+  # Stop any further execution until an API key (session) is created
+  # Will most likely need to turn this into an external function since this will be used in nearly every single function
+  # gotta live by that DRY
+  if ($MaaS360Session.apiKey -eq '')
+  {
+    throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
+  }
+  
+  $Uri = $MaaS360Session.url + 'user-apis/user/1.0/search/' + $MaaS360Session.billingID
 
   $Body = @{}
 
@@ -495,10 +512,10 @@ function Get-MaaS360User
 
   try 
   {
-    $Response = Invoke-MaaS360Method -Uri $Uri -Method $Method -Body $Body -Endpoint $Endpoint
+    $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' `
+      -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
 
-    $Response
-    
+    $Response.users.user
   }
   catch
   {
@@ -506,7 +523,7 @@ function Get-MaaS360User
   }
   
 }
-#EndRegion '.\public\Get-MaaS360User.ps1' 56
+#EndRegion '.\public\Get-MaaS360User.ps1' 53
 #Region '.\public\New-MaaS360User.ps1' -1
 
 function New-MaaS360User
@@ -773,47 +790,56 @@ function Invoke-MaaS360Method
         [securestring]$Token
     )
 
-    # Maybe we should dynamically build the headers
-    $Headers = @{}
-
     # Stop any further execution until an API key (session) is created
     if ($null -eq $MaaS360Session.apiKey)
     {
         throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
     }
 
-    switch ($Method)
+    # Make sure the headers hash is empty before trying to shove more stuff into it
+    if ($MaaS360Session.tempHeaders.Count -eq 0)
     {
-        'Get'
+        switch ($Method)
         {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/json')
-            break
-        }
-        'Post'
-        {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/x-www-form-urlencoded')
-            break
-        }
-        { 'Patch', 'Delete' }
-        {
-            $Headers.Add('Accept', 'application/json')
-            $Headers.Add('Content-Type', 'application/json-patch+json')
-            break
+            'Get'
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/json')
+                break
+            }
+            'Post'
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/x-www-form-urlencoded')
+                break
+            }
+            { 'Patch', 'Delete' }
+            {
+                $MaaS360Session.tempHeaders.Add('Accept', 'application/json')
+                $MaaS360Session.tempHeaders.Add('Content-Type', 'application/json-patch+json')
+                break
+            }
         }
     }
+   
 
+    # Maybe we should dynamically build the headers ^^
+    $Headers = $MaaS360Session.tempHeaders
+    
     try
     {
+        # Not sure if smart to keep it out in the open like this instead of behind a variable
         $InvokeResponse = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Headers -Body $Body -ContentType $ContentType -Authentication $Authentication -Token $Token
 
         $InvokeResponse
+        # Clear to avoid potential errors in subsequent calls
+        $MaaS360Session.tempHeaders.Clear()
     }
     catch
     {
+        # Just the basics for right now
         $_.ErrorDetails.Message
         $_.Exception.Message
     }
 }
-#EndRegion '.\private\Invoke-MaaS360Method.ps1' 64
+#EndRegion '.\private\Invoke-MaaS360Method.ps1' 73

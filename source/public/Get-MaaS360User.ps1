@@ -1,10 +1,5 @@
-$TestEndpoint = 'user-apis/user/1.0/search/'
-
 function Get-MaaS360User
 {
-
-  [CmdletBinding(DefaultParameterSetName = 'PartialMatch')]
-
   Param(
     [int]$IncludeAllUsers,
     [int]$PageNumber,
@@ -15,14 +10,16 @@ function Get-MaaS360User
     [string]$Username,
     [string]$Endpoint
   )
-
-  # Testing purposes
-  if ($null -ne $TestEndpoint)
-  {
-    $Endpoint = $TestEndpoint
-  }
  
-  $Uri = $MaaS360Session.url + $Endpoint + $MaaS360Session.billingID
+  # Stop any further execution until an API key (session) is created
+  # Will most likely need to turn this into an external function since this will be used in nearly every single function
+  # gotta live by that DRY
+  if ($MaaS360Session.apiKey -eq '')
+  {
+    throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
+  }
+  
+  $Uri = $MaaS360Session.url + 'user-apis/user/1.0/search/' + $MaaS360Session.billingID
 
   $Body = @{}
 
@@ -42,10 +39,10 @@ function Get-MaaS360User
 
   try 
   {
-    $Response = Invoke-MaaS360Method -Uri $Uri -Method $Method -Body $Body -Endpoint $Endpoint
+    $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' `
+      -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
 
-    $Response
-    
+    $Response.users.user
   }
   catch
   {

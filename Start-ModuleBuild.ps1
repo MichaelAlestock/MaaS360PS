@@ -57,19 +57,6 @@ if ($BumpVersion)
     $Version = $NewVersion
 }
 
-$MaaS360Session = @{
-    'url'          = $null
-    'endpoint'     = $null
-    'platformID'   = $null
-    'billingID'    = $null
-    'userName'     = $null
-    'password'     = $null
-    'appID'        = $null
-    'appVersion'   = $null
-    'appAccessKey' = $null 
-    'apiKey'       = $null
-}
-
 $VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'MaaS360PS', $Version, 'MaaS360PS.psm1')
 
 $Parameters = @{
@@ -77,7 +64,9 @@ $Parameters = @{
     SourceDirectories = @('public', 'private')
     OutputDirectory   = '../output'
     Version           = $Version
-    Suffix            = New-Variable -Name 'MaaS360Session' -Value $MaaS360Session -Scope 'Script' -Force
+    Prefix            = "New-Variable -Name 'MaaS360Session' -Value @{
+    'url' = ''; 'endpoint' = ''; 'platformID' = ''; 'billingID' = ''; 'userName' = ''; 'password' = ''; 'appID' = ''; 'appVersion' = '' ; 'appAccessKey' = '' ; 'apiKey' = '' ; 'tempHeaders' = @{}
+} -Scope 'Global' -Force"
     Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
@@ -91,6 +80,7 @@ switch ($PSBoundParameters.Keys)
     { $_ -eq 'Output' }
     {
         New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
+        New-MarkdownAboutHelp -OutputFolder $Output -AboutName 'about_MaaS360PS'
         New-ExternalHelp $Path -OutputPath $Output
         break
     }

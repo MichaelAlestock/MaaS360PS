@@ -6,7 +6,10 @@
     .DESCRIPTION
         A longer description of the function, its purpose, common use cases, etc.
     .NOTES
-        Information or caveats about the function e.g. 'This function is not supported in Linux'
+        Bugs to fix:
+            - Receive a success message when getting trying to receive a token even when using incorrect info
+            - Always fails the first auth attempt even when info is correct and succeeds on the next attempt
+                - Annoyance for now
     .LINK
         Specify a URI to a help page, this will show when Get-Help -Online is used.
     .EXAMPLE
@@ -38,7 +41,8 @@
         [string]$AppAccessKey,
         [Parameter(HelpMessage = 'Enter same credentials utilized to log into MaaS360 web portal.',
             ParameterSetName = 'New API token', Mandatory = $true)]
-        [PSCredential]$Credentials
+        [PSCredential]$Credentials,
+        [switch]$Result
     )
 
     # We need to get an auth token from MaaS360 before we can do anything which means we need to utilize all params and make an API call
@@ -59,20 +63,6 @@
             throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
         }
 
-        $Body = @"
-        <authRequest>
-          <maaS360AdminAuth>
-              <platformID>$($MaaS360Session.platformID)</platformID>
-              <billingID>$($MaaS360Session.billingID)</billingID>
-              <password>$($MaaS360Session.password)</password>
-              <userName>$($MaaS360Session.userName)</userName>
-              <appID>$($MaaS360Session.appID)</appID>
-              <appVersion>$($MaaS360Session.appVersion)</appVersion>
-              <appAccessKey>$($MaaS360Session.appAccessKey)</appAccessKey>
-          </maaS360AdminAuth>
-        </authRequest>
-"@
-
         $Headers = @{
             'Accept'       = 'application/json'
             'Content-Type' = 'application/xml'
@@ -89,7 +79,21 @@
         $MaaS360Session.appVersion = $AppVersion
         $MaaS360Session.appAccessKey = $AppAccessKey
 
-        $Script:Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
+        $Body = @"
+        <authRequest>
+          <maaS360AdminAuth>
+              <platformID>$($MaaS360Session.platformID)</platformID>
+              <billingID>$($MaaS360Session.billingID)</billingID>
+              <password>$($MaaS360Session.password)</password>
+              <userName>$($MaaS360Session.userName)</userName>
+              <appID>$($MaaS360Session.appID)</appID>
+              <appVersion>$($MaaS360Session.appVersion)</appVersion>
+              <appAccessKey>$($MaaS360Session.appAccessKey)</appAccessKey>
+          </maaS360AdminAuth>
+        </authRequest>
+"@
+
+        $Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
 
         $AuthResponse = Invoke-RestMethod -Uri $Uri -Body $Body -Headers $Headers -Method $Method
         $RawToken = $AuthResponse.authResponse.authToken
@@ -98,22 +102,32 @@
  
         Write-Debug -Message "URI: $($Uri)"
         Write-Debug -Message "SECURE API KEY: $($MaaS360Session.apiKey)"
+
+        if (($MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText) -eq 'MaaS token=""')
+        {
+            Write-Debug -Message "RAW API KEY FIELD IS EMPTY: [$($MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText)] instead of [MaaS token='your_token_here']"
+
+            throw 'Something went wrong, [API KEY] was not retrieved. Please check parameter values to be sure all info is correct or run the command with the -Debug parameter to get more info.'
+        }
         
         Write-Output -InputObject 'Successfully obtained API KEY. '
     }
 
     if ($Method -eq 'Get')
     {
-        if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.url))
+        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.url -eq ''))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
 
         $Token = $MaaS360Session.apiKey | ConvertFrom-SecureString -AsPlainText
-       
-        Write-Debug -Message "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
-        Write-Debug -Message "API KEY: $Token"
 
+        if ($Result.IsPresent)
+        {
+            Write-Output -InputObject "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
+            Write-Output -InputObject "API KEY: $Token"
+        }
+       
         Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
     }
 
