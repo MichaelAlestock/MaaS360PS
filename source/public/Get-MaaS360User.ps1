@@ -7,8 +7,7 @@ function Get-MaaS360User
     [int]$Match,
     [string]$EmailAddress,
     [string]$FullName,
-    [string]$Username,
-    [string]$Endpoint
+    [string]$Username
   )
  
   # Stop any further execution until an API key (session) is created
@@ -18,8 +17,8 @@ function Get-MaaS360User
   {
     throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
   }
-  
-  $Uri = $MaaS360Session.url + 'user-apis/user/1.0/search/' + $MaaS360Session.billingID
+
+  $Uri = $MaaS360Session.baseUrl + 'user-apis/user/1.0/search/' + $MaaS360Session.billingID
 
   $Body = @{}
 

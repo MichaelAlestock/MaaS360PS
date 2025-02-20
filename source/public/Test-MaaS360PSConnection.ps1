@@ -19,21 +19,11 @@ function Test-MaaS360PSConnection
     
     [CmdletBinding()]
     Param(
-        [Parameter(HelpMessage = 'User instances MaaS360 API base url.')]
-        [ValidateSet(
-            'https://apis.m3.maas360.com/'
-        )]
-        [string]$Url,
-        [Parameter(HelpMessage = "Endpoint you'd like to interact with")]
-        [ValidateSet(
-            'user-apis/user/1.0/search/'
-        )]
-        [string]$Endpoint,
         [string]$BillingID,
         [string]$Method
     )
 
-    if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.url) -or (-not (Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
+    if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.baseUrl) -or (-not (Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
     {
         throw 'No connection created to MaaS360 instance. Please run "Connect-MaaS360PS" to create a session.'
     }
@@ -43,7 +33,7 @@ function Test-MaaS360PSConnection
         'Content-Type' = 'application/json'
     }
 
-    $Uri = $Url + $Endpoint + $BillingID
+    $Uri = $MaaS360Session.baseUrl + 'user-apis/user/1.0/search/' + $BillingID
 
     # Both of these are needed to give the user the ability to see if their URI or API KEY could be reasons behind errors they're experiencing.
     Write-Debug -Message "URI: $Uri"
@@ -67,12 +57,14 @@ function Test-MaaS360PSConnection
         # Not sure how else to check for content in the response other than checking if it's a PSCustomObject since it wouldn't be if it were an error.
         if ((($TestResponse).GetType()).Name -eq 'PSCustomObject')
         {
-            Write-Output -InputObject "Connection to [$Uri] successful."
+            Write-Debug -Message "Connection to [$Uri] successful."
+            return $true
         }
         else
         {
             # API isn't going to return a terminating error no matter what I do so this is the best way I can think of to handle the error and provide the user with useful information.
-            Get-BetterError -ExceptionMessage "Connection to [$Uri] was unsuccessful. Find reasoning below to correct the issue." -ErrorID "$BillingID" -ErrorObject $TestResponse -ErrorCategory 'ConnectionError'
+            Write-Debug -Message $(Get-BetterError -ExceptionMessage "Connection to [$Uri] was unsuccessful. Find reasoning below to correct the issue." -ErrorID "$BillingID" -ErrorObject $TestResponse -ErrorCategory 'ConnectionError')
+            return $false
         }
     }
     catch

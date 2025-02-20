@@ -22,12 +22,6 @@
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$BillingID,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
-        [ValidateSet('https://apis.m3.maas360.com/')]
-        [string]$Url,
-        [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
-        [ValidateSet('auth-apis/auth/1.0/authenticate')]
-        [string]$Endpoint,
-        [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [Parameter(ParameterSetName = 'Connect with API token', Mandatory = $true)]
         [ValidateSet('Get', 'Post')]
         [string]$Method,
@@ -54,23 +48,22 @@
     # Used for the POST request to get an API key
     # We'll change things up as we get everything working by adding some logic and error-handling
 
+    if (-not ((Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
+    {
+        throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
+    }
+        
     # $MaaS360Session.apiToken = $null  # Play with this after we make the call and retrieve the API token
     if ($Method -eq 'Post')
     {
-
-        if (-not ((Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
-        {
-            throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
-        }
-
         $Headers = @{
             'Accept'       = 'application/json'
             'Content-Type' = 'application/xml'
         }
 
         $AuthResponse = ''
-        $MaaS360Session.url = $Url
-        $MaaS360Session.endpoint = $Endpoint
+        # $MaaS360Session.url = $Url # Getting rid of this and just gonna place it in the script var since it's global
+        # $MaaS360Session.endpoint = $Endpoint # Getting rid of this too for the same reasons as ^^
         $MaaS360Session.billingID = $BillingID
         $MaaS360Session.platformID = $PlatformID
         $MaaS360Session.password = $Credentials.Password | ConvertFrom-SecureString -AsPlainText
@@ -93,7 +86,7 @@
         </authRequest>
 "@
 
-        $Uri = $MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID
+        $Uri = $MaaS360Session.baseUrl + $MaaS360Session.authEndpoint + '/' + $MaaS360Session.billingID
 
         $AuthResponse = Invoke-RestMethod -Uri $Uri -Body $Body -Headers $Headers -Method $Method
         $RawToken = $AuthResponse.authResponse.authToken
@@ -115,7 +108,7 @@
 
     if ($Method -eq 'Get')
     {
-        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.url -eq ''))
+        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.authEndpoint -eq ''))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
@@ -124,15 +117,19 @@
 
         if ($Result.IsPresent)
         {
-            Write-Output -InputObject "URI: $($MaaS360Session.url + $MaaS360Session.endpoint + '/' + $MaaS360Session.billingID)"
+            Write-Output -InputObject "URI: $($MaaS360Session.baseUrl + $MaaS360Session.authEndpoint + '/' + $MaaS360Session.billingID)"
             Write-Output -InputObject "API KEY: $Token"
         }
        
         Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
     }
 
-    # if (-not (Test-MaaS360PSConnection))
-    # {
-    #     throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
-    # }
+    if (-not (Test-MaaS360PSConnection -BillingID $BillingID -Method 'Get'))
+    {
+        throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
+    }
+    else
+    {
+        Write-Output -InputObject 'Connection to your MaaS360 instance is fully confirmed. Feel free to use all commands.'
+    }
 }

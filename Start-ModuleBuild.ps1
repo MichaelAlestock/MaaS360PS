@@ -12,7 +12,9 @@ Param(
     [Parameter(ParameterSetName = 'Markdown help files')]
     [string]$Output,
     [Parameter(ParameterSetName = 'Markdown help files')]
-    [switch]$Update
+    [switch]$Update,
+    [Parameter(ParameterSetName = 'Build')]
+    [switch]$Build
 )
 
 $ManifestPath = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'MaaS360PS.psd1')
@@ -65,29 +67,36 @@ $Parameters = @{
     OutputDirectory   = '../output'
     Version           = $Version
     Prefix            = "New-Variable -Name 'MaaS360Session' -Value @{
-    'url' = ''; 'endpoint' = ''; 'platformID' = ''; 'billingID' = ''; 'userName' = ''; 'password' = ''; 'appID' = ''; 'appVersion' = '' ; 'appAccessKey' = '' ; 'apiKey' = '' ; 'tempHeaders' = @{}
+    'url' = ''; 'endpoint' = ''; 'platformID' = ''; 'billingID' = ''; 'userName' = ''; 'password' = ''; 'appID' = ''; 'appVersion' = '' ; 'appAccessKey' = '' ; 'apiKey' = '' ; 'tempHeaders' = @{} ; 'baseUrl' = 'https://apis.m3.maas360.com/' ; 'authEndpoint' = 'auth-apis/auth/1.0/authenticate'
 } -Scope 'Global' -Force"
     Target            = 'CleanBuild'
     # UnversionedOutputDirectory = $false
 }
 
-Build-Module @Parameters
-
-Import-Module -Name $VersionSpecificManifest
-
 switch ($PSBoundParameters.Keys)
 {
-    { $_ -eq 'Output' }
+    'Build'
     {
+        Build-Module @Parameters
+        break
+    }
+    'Output'
+    {
+        Import-Module -Name $VersionSpecificManifest
         New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
         New-MarkdownAboutHelp -OutputFolder $Output -AboutName 'about_MaaS360PS'
         New-ExternalHelp $Path -OutputPath $Output
         break
     }
-    { $_ -eq 'Update' }
+    'Update'
     {
+        Import-Module -Name $VersionSpecificManifest
         Update-MarkdownHelp -Path $Path
         break
+    }
+    'Default'
+    {
+        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] parameter.'
     }
 }
 #endregion Build Module
