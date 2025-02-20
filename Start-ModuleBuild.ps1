@@ -6,13 +6,12 @@ Param(
     [Parameter(ParameterSetName = 'Control version')]
     [ValidateSet('Major', 'Minor', 'Patch')]
     [string]$BumpVersion,
-    [Parameter(Mandatory = $false)]
     [Parameter(ParameterSetName = 'Markdown help files')]
-    [string]$Path,
-    [Parameter(ParameterSetName = 'Markdown help files')]
-    [string]$Output,
+    [switch]$Create,
     [Parameter(ParameterSetName = 'Markdown help files')]
     [switch]$Update,
+    [Parameter(ParameterSetName = 'Markdown help files')]
+    [switch]$External,
     [Parameter(ParameterSetName = 'Build')]
     [switch]$Build
 )
@@ -73,6 +72,9 @@ $Parameters = @{
     # UnversionedOutputDirectory = $false
 }
 
+$DocsPath = '.\docs'
+$ExternalHelpPath = '.\docs\en-us'
+
 switch ($PSBoundParameters.Keys)
 {
     'Build'
@@ -80,23 +82,27 @@ switch ($PSBoundParameters.Keys)
         Build-Module @Parameters
         break
     }
-    'Output'
+    'Create'
     {
         Import-Module -Name $VersionSpecificManifest
-        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
-        New-MarkdownAboutHelp -OutputFolder $Output -AboutName 'about_MaaS360PS'
-        New-ExternalHelp $Path -OutputPath $Output
+        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $DocsPath
+        New-MarkdownAboutHelp -OutputFolder $ExternalHelpPath -AboutName 'about_MaaS360PS'
+        break
+    }
+    'External'
+    {
+        New-ExternalHelp $DocsPath -OutputPath $ExternalHelpPath -Force
         break
     }
     'Update'
     {
         Import-Module -Name $VersionSpecificManifest
-        Update-MarkdownHelp -Path $Path
+        Update-MarkdownHelp -Path $DocsPath
         break
     }
     'Default'
     {
-        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] parameter.'
+        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] switch.'
     }
 }
 #endregion Build Module

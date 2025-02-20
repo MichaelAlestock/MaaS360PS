@@ -1,23 +1,6 @@
 ﻿function Connect-MaaS360PS
 {
-    <#
-    .SYNOPSIS
-        A short one-line action-based description, e.g. 'Tests if a function is valid'
-    .DESCRIPTION
-        A longer description of the function, its purpose, common use cases, etc.
-    .NOTES
-        Bugs to fix:
-            - Receive a success message when getting trying to receive a token even when using incorrect info
-            - Always fails the first auth attempt even when info is correct and succeeds on the next attempt
-                - Annoyance for now
-    .LINK
-        Specify a URI to a help page, this will show when Get-Help -Online is used.
-    .EXAMPLE
-        Test-MyTestFunction -Verbose
-        Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
-    #>
-
-    [CmdletBinding(DefaultParameterSetName = 'Connect with API token')]
+    [CmdletBinding(DefaultParameterSetName = 'New API token')]
     Param(
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$BillingID,
@@ -108,7 +91,7 @@
 
     if ($Method -eq 'Get')
     {
-        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.authEndpoint -eq ''))
+        if ($MaaS360Session.authEndpoint -eq [System.String]::Empty)
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
@@ -122,9 +105,13 @@
         }
        
         Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
+
+        Write-Verbose -Message "Clearing [$($MaaS360Session.authEndpoint)] from 'MaaS360Session'."
+        $MaaS360Session.authEndpoint = ''
+        Write-Verbose -Message "AuthEndpoint is now '[System.String]::Empty'."
     }
 
-    if (-not (Test-MaaS360PSConnection -BillingID $BillingID -Method 'Get'))
+    if (-not (Test-MaaS360PSConnection -BillingID $MaaS360Session.billingID -Method 'Get'))
     {
         throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
     }

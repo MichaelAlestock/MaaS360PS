@@ -3,27 +3,14 @@
 
 function Test-MaaS360PSConnection
 {
-    <#
-    .SYNOPSIS
-        A short one-line action-based description, e.g. 'Tests if a function is valid'
-    .DESCRIPTION
-        A longer description of the function, its purpose, common use cases, etc.
-    .NOTES
-        Information or caveats about the function e.g. 'This function is not supported in Linux'
-    .LINK
-        Specify a URI to a help page, this will show when Get-Help -Online is used.
-    .EXAMPLE
-        Test-MyTestFunction -Verbose
-        Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
-    #>
-    
     [CmdletBinding()]
     Param(
         [string]$BillingID,
         [string]$Method
     )
 
-    if (($null -eq $MaaS360Session.apiKey) -or ($null -eq $MaaS360Session.baseUrl) -or (-not (Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
+    # Redundancy at its finest
+    if (($MaaS360Session.apiKey -eq [System.String]::Empty) -or ($MaaS360Session.baseUrl -eq [System.String]::Empty) -or (-not (Get-ChildItem -Path 'Variable:').Name -contains 'MaaS360Session'))
     {
         throw 'No connection created to MaaS360 instance. Please run "Connect-MaaS360PS" to create a session.'
     }
