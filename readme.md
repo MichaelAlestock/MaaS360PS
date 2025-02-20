@@ -7,21 +7,18 @@ A PowerShell API wrapper for the [IBM MaaS360 Web Services API](https://www.ibm.
 
 > :warning: **_WARNING_**: **This is a work-in-progress and a complete rewrite of my original idea. Most functions are will not work for 
 > a few updates since they followed old design ideas. Please take this into account before cloning.  If you have any issues please utilize the Github Issues or submit a pull request.**
-> 
-> This will soon be published to PSGallery, I apologize for the inconvenience.
+
 ---
 
 ## Installation
 
 ```powershell
 
-# Step 1. Clone the repository to your respective PowerShell module path.
+# Step 1. Install module from PowerShell Gallery via PowerShellGet
 
-# Step 2. Import the module into your session.
+Install-Module -Name 'MaaS360PS'
 
-Import-Module -Name //path/to/module/
-
-# Step 3. Create a session to generate an API key
+# Step 2. Create a session to generate an API key
 
 # NOTE: All parameters values are found in the MaaS360 portal under Setup > Documentation.
 
@@ -34,7 +31,7 @@ Connect-MaaS360PS -Method 'Get'
 # View details regarding your session such as [API KEY] and complete [URI]
 Connect-MaaS360PS -Method 'Get' -Result
 
-# Step 4 (optional). Test your connection to MaaS360 with the supplied API key.
+# Step 3 (optional). Test your connection to MaaS360 with the supplied API key.
 Test-MaaS360PSConnection -Url https://apis.m3.maas360.com/ -Endpoint user-apis/user/1.0/search/ -BillingID '0123456789' -Method 'Get'
 
 # Example Connect-MaaS360PS with [-DEBUG] and [-VERBOSE] for full visual of the command.
