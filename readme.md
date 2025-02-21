@@ -5,7 +5,7 @@
 A PowerShell API wrapper for the [IBM MaaS360 Web Services API](https://www.ibm.com/docs/en/maas360?topic=services-maas360-api-reference-web). 
 
 
-> :warning: **_WARNING_**: **This is a work-in-progress and a complete rewrite of my original idea. Most functions are will not work for 
+> :warning: **_WARNING_**: **This is a work-in-progress and a complete rewrite of my original idea. Most functions will not work for 
 > a few updates since they followed old design ideas. Please take this into account before cloning.  If you have any issues please utilize the Github Issues or submit a pull request. You can also feel free to contact me on PowerShell Gallery to report issues and I will manually open an issue for you.**
 
 ## Installation
@@ -19,15 +19,15 @@ Install-Module -Name 'MaaS360PS'
 > **_NOTE_** : All values for parameters are found in the MaaS360 portal under Setup > Documentation.
 
 ```powershell
-# Retrieving an API key from MaaS360
+# Retrieving an API key from MaaS360 will also automatically test your connection by calling the users endpoint.
 Connect-MaaS360PS -PlatformID '0' -BillingID '0123456789' -AppID '01234567_apple' -AppVersion '1.0' `
 -AppAccessKey 'cIENUGZ' -Credentials 'your_email_address' -Method 'Post'
 
 # Returns 'assumed successful' but the -Result switch can show more detail.
-Connect-MaaS360PS -Method 'Get'
+Connect-MaaS360PS -Validate
 
 # View details regarding your session such as [API KEY] and complete [URI].
-Connect-MaaS360PS -Method 'Get' -Result
+Connect-MaaS360PS -Validate -Result
 
 # OPTIONAL: Test your connection to MaaS360 with the retrieved API key.
 Test-MaaS360PSConnection -BillingID '0123456789' -Method 'Get'
@@ -57,6 +57,7 @@ Connection to your MaaS360 instance is fully confirmed. Feel free to use all com
 ```
 
 ## Help
+
 ```powershell
 
 # Utilize PowerShell's discoverability to learn more about functions and their usages.

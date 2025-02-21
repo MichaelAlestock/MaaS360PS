@@ -62,7 +62,7 @@ $VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'M
 
 $Parameters = @{
     SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'build.psd1')
-    SourceDirectories = @('public', 'private')
+    SourceDirectories = @('public', 'private', 'classes')
     OutputDirectory   = '../output'
     Version           = $Version
     Prefix            = "New-Variable -Name 'MaaS360Session' -Value @{
