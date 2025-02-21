@@ -16,7 +16,7 @@ function Get-MaaS360User
     [Parameter(
       HelpMessage = "Username of the user that's searched for."
     )]
-    [string]$PartialUsername,
+    [string]$PartialUserName,
 
     [Parameter(
       HelpMessage = 'Domain name'
@@ -68,8 +68,6 @@ function Get-MaaS360User
   )
  
   # Stop any further execution until an API key (session) is created
-  # Will most likely need to turn this into an external function since this will be used in nearly every single function
-  # gotta live by that DRY
   if ($MaaS360Session.apiKey -eq '')
   {
     throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
@@ -79,45 +77,64 @@ function Get-MaaS360User
 
   $Body = @{}
 
-  # User object related
-  # Removed the majority of what was there to slowly build up to the best way to handle dynamically adding these keys to the body
-
-  foreach ($Item in $PSBoundParameters.GetEnumerator())
+  # Takes in PSBoundParameters and converts the key name to the proper format i.e. emailAddress and not EmailAddress
+  # then adds it to the body along with the value
+  foreach ($Param in $PSBoundParameters.GetEnumerator())
   {
-    $Body.Add($Item.Key.Substring(0, 1).ToLower() + $Item.Key.Substring(1), $Item.Value)
+    $Body.Add($Param.Key.Substring(0, 1).ToLower() + $Param.Key.Substring(1), $Param.Value)
   }
 
-  <#
-  # Write debug to show not only what params were used when invoking the command but
-  # also to show what params are a part of the overall body that is sent in the request
-  #>
-
-  # Finding a better way to handle writing to debug instead of this
-  # Write-Debug -Message ( "Running $($MyInvocation.MyCommand)`n" +
-  #   "PSBoundParameters:`n$($PSBoundParameters | Format-List | Out-String)" +
-  #   "Get-GNMaaS360User parameters:`n$($Body | Format-List | Out-String)" )
-
+  # Next step is to work on some stuff for write-debug to allow the user to see information to narrow down issues
   $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' `
     -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
 
   $TotalUsers = $Response.users.count
   $ActualUsers = $Response.users.user
-  # $ReturnedPageNumber = $Response.users.pageNumber
-  # $ReturnedPageSize = $Response.users.pageSize
+  $ReturnedPageNumber = $Response.users.pageNumber
+  $ReturnedPageSize = $Response.users.pageSize
+
+  Get-ProgressInformation -Count $TotalUsers -Page $ReturnedPageNumber -Size $ReturnedPageSize
     
   switch ($Response)
   {
-    { $TotalUsers -eq 0 }
+    { $TotalUsers -le 0 }
     {
-      Write-Output -InputObject 'No user information returned. Please check your inputs and try again.'
+      throw 'No user information returned. Please check your inputs and try again.'
       break
     }
-    Default
+    { ($ReturnedPageNumber -eq [System.String]::Empty) -or ($ReturnedPageSize -eq [System.String]::Empty) }
+    {
+      throw 'Page number or page size is empty. Please check your parameter values and try again.'
+    }
+    { $TotalUsers -gt 0 }
     {
       $ActualUsers | ForEach-Object {
-        [User]::new($_.emailAddress, $_.fullName, $_.userName, $_.usernameAlias, $_.domain, $_.status, $_.createDate, $_.updateDate)
+        [PSCustomObject]@{
+          AuthType               = $_.authType
+          CreatedDate            = $_.createDate
+          Department             = $_.department
+          Domain                 = $_.domain
+          EmailAddress           = $_.emailAddress
+          EmployeeID             = $_.employeeID
+          FullName               = $_.fullName
+          Groups                 = $_.groups.group
+          ID                     = $_.id
+          JobTitle               = $_.jobTitle
+          Location               = $_.location
+          LogonHours             = $_.logonHours
+          PasswordExpirationDate = $_.passwordexpirydate
+          PhoneNumber            = $_.phoneNumber
+          Source                 = $_.source
+          Status                 = $_.status
+          UpdateDate             = $_.updateDate
+          UPN                    = $_.upn
+          UserDistinguishedName  = $_.userDN
+          UserIdentifier         = $_.UserIdentifier
+          Username               = $_.userName
+          Alias                  = $_.usernameAlias
+          UserGroupBits          = $_.usrGrpBits
+        }
       }
-
     }
   }  
 }

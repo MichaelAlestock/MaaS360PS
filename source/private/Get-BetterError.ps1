@@ -22,13 +22,17 @@ function Get-BetterError
         $ErrorObject
     )
 
-    if ($null -eq $FindErrorReason.ErrorDetails)
+    if (($null -eq $FindErrorReason.ErrorDetails) -or ($FindErrorReason.ErrorDetails.Message -eq [System.String]::Empty))
     {
         switch ($ExceptionMessage)
         {
             'This operation is not supported for a relative URI.' 
             { 
                 Write-Warning -Message "URI issue. Please make sure 'MaaS360Session' is properly loaded. If issue persists, please re-import the module.'"
+                throw $ErrorRecord
+            }
+            Default
+            {
                 throw $ErrorRecord
             }
         }
