@@ -37,7 +37,7 @@
     {
         throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
     }
-        
+
     # $MaaS360Session.apiToken = $null  # Play with this after we make the call and retrieve the API token
     if ($Method -eq 'Post')
     {
@@ -77,7 +77,7 @@
         $RawToken = $AuthResponse.authResponse.authToken
         Write-Debug -Message "RAW API KEY: $RawToken"
         $MaaS360Session.apiKey = ('MaaS token=' + $("""$RawToken""")) | ConvertTo-SecureString -AsPlainText -Force
- 
+
         Write-Debug -Message "URI: $($Uri)"
         Write-Debug -Message "SECURE API KEY: $($MaaS360Session.apiKey)"
 
@@ -87,7 +87,7 @@
 
             throw 'Something went wrong, [API KEY] was not retrieved. Please check parameter values to be sure all info is correct or run the command with the -Debug parameter to get more info.'
         }
-        
+
         Write-Output -InputObject 'Successfully obtained API KEY. '
         Write-Output -InputObject ''
         Write-Output -InputObject 'Running "Test-MaaS360PSConnection" to test your API key and connection.'
@@ -117,7 +117,7 @@
             Write-Output -InputObject "URI: $($MaaS360Session.baseUrl + $MaaS360Session.authEndpoint + '/' + $MaaS360Session.billingID)"
             Write-Output -InputObject "API KEY: $Token"
         }
-       
+
         Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
 
         Write-Verbose -Message "Clearing [$($MaaS360Session.authEndpoint)] from 'MaaS360Session'."

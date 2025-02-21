@@ -1,6 +1,6 @@
 function Get-MaaS360User
 {
-
+  [OutputType(PSCustomObject)]
   [CmdletBinding()]
   Param(
     [Parameter(
@@ -64,9 +64,9 @@ function Get-MaaS360User
     )]
     [ValidateSet(0, 1)]
     [int]$UsersUpdatedAfterInEpochms
-    
+
   )
- 
+
   # Stop any further execution until an API key (session) is created
   if ($MaaS360Session.apiKey -eq '')
   {
@@ -94,7 +94,7 @@ function Get-MaaS360User
   $ReturnedPageSize = $Response.users.pageSize
 
   Get-ProgressInformation -Count $TotalUsers -Page $ReturnedPageNumber -Size $ReturnedPageSize
-    
+
   switch ($Response)
   {
     { $TotalUsers -le 0 }
@@ -136,5 +136,5 @@ function Get-MaaS360User
         }
       }
     }
-  }  
+  }
 }

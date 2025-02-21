@@ -19,7 +19,7 @@ function Get-MaaS360Device
     [Parameter(HelpMessage = 'Phone number that should be searched for.')]
     [string]$PartialPhoneNumber,
 
-    [Parameter(HelpMessage = 'Username of the user that should be searched for.', ValueFromPipelineByPropertyName = $True, ParameterSetName = 'User information')]
+    [Parameter(HelpMessage = 'Username of the user that should be searched for.', ParameterSetName = 'User information')]
     [string]$PartialUsername,
 
     [Parameter(HelpMessage = 'Email address of the user that should be searched for.')]
@@ -74,19 +74,16 @@ function Get-MaaS360Device
     [switch]$All
   )
 
-  # Need to work on creating a function that will contain all the information for the URI, Body definition, and the 
-  # body builder to I stop reusing this in everything
-
-  # Stop any further execution until an API key (session) is created
-  if ($MaaS360Session.apiKey -eq '')
+  # Basically here to check if it's empty
+  if ($MaaS360Session.apiKey -eq [System.String]::Empty)
   {
     throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
   }
- 
+
   $Uri = $MaaS360Session.baseUrl + 'device-apis/devices/2.0/search/customer/' + $MaaS360Session.billingID
- 
+
   $Body = @{}
- 
+
   # Takes in PSBoundParameters and converts the key name to the proper format i.e. emailAddress and not EmailAddress
   # then adds it to the body along with the value
   foreach ($Param in $PSBoundParameters.GetEnumerator())
@@ -95,6 +92,12 @@ function Get-MaaS360Device
   }
 
   $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
+
+  # Obv don't wanna repeat myself so I'll change this in another update but here just incase the token expired
+  if ($MaaS360Session.apiKey -eq [System.String]::Empty)
+  {
+    throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
+  }
 
   Get-ProgressInformation -Count $Response.devices.count -Page $Response.devices.pageNumber -Size $Response.devices.pageSize
 
@@ -106,30 +109,29 @@ function Get-MaaS360Device
     # $Carrier = $BasicInfo.'Current Carrier'
 
     $Limited = [PSCustomObject]@{
-      'LastReported'       = $_.devices.device.lastReported
-      'Name'               = $_.devices.device.deviceName
-      'Type'               = $_.devices.device.deviceType
-      'Status'             = $_.devices.device.deviceStatus
-      'Serial'             = $_.devices.device.platformSerialNumber
-      'MdmSerial'          = $_.devices.device.maas360DeviceID
-      'IMEI'               = $_.devices.device.imeiEsn
-      'Enrollment'         = $_.devices.device.maas360ManagedStatus
-      'Owner'              = $_.devices.device.username
-      'OwnerEmail'         = $_.devices.device.emailAddress
-      'OwnedBy'            = $_.devices.device.ownership
-      'ModelId'            = $_.devices.device.modelId
-      'iOS'                = $_.devices.device.osName
-      'iOS_Version'        = $_.devices.device.osVersion
-      'PhoneNumber'        = ($_.devices.device.phoneNumber).Remove(0, 2).Insert(3, '.').Insert(7, '.')
-      'AppCompliance'      = $_.devices.device.appComplianceState
-      'PasscodeCompliance' = $_.devices.device.passcodeCompliance
-      'PolicyCompliance'   = $_.devices.device.policyComplianceState
-      'Policy'             = $_.devices.device.mdmPolicy
-      'DateRegistered'     = $_.devices.device.installedDate
-      'iTunesEnabled'      = $_.devices.device.itunesStoreAccountEnabled
-      'WipeStatus'         = $_.devices.device.selectiveWipeStatus
-      'UDID'               = $_.devices.device.udid
-      'MAC_Address'        = $_.devices.device.wifiMacAddress
+      'DeviceLastReported'     = $_.devices.device.lastReported
+      'DeviceName'             = $_.devices.device.deviceName
+      'DeviceType'             = $_.devices.device.deviceType
+      'DeviceStatus'           = $_.devices.device.deviceStatus
+      'DeviceSerial'           = $_.devices.device.platformSerialNumber
+      'MdmSerial'              = $_.devices.device.maas360DeviceID
+      'ImeiEsn'                = $_.devices.device.imeiEsn
+      'MdmEnrollmentStatus'    = $_.devices.device.maas360ManagedStatus
+      'DeviceOwner'            = $_.devices.device.username
+      'OwnerEmailAddress'      = $_.devices.device.emailAddress
+      'DeviceModel'            = $_.devices.device.modelId
+      'OperatingSystem'        = $_.devices.device.osName
+      'OperatingSystemVersion' = $_.devices.device.osVersion
+      'DevicePhoneNumber'      = $_.devices.device.phoneNumber
+      'MdmAppCompliance'       = $_.devices.device.appComplianceState
+      'MdmPasscodeCompliance'  = $_.devices.device.passcodeCompliance
+      'MdmPolicyCompliance'    = $_.devices.device.policyComplianceState
+      'MdmPolicy'              = $_.devices.device.mdmPolicy
+      'DeviceRegistrationDate' = $_.devices.device.installedDate
+      'iTunesEnabled'          = $_.devices.device.itunesStoreAccountEnabled
+      'SelectiveWipeStatus'    = $_.devices.device.selectiveWipeStatus
+      'Udid'                   = $_.devices.device.udid
+      'WifiMacAddress'         = $_.devices.device.wifiMacAddress
     }
     if ($All.IsPresent)
     {

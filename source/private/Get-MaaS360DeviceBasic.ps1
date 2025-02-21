@@ -15,13 +15,13 @@ function Get-MaaS360DeviceBasic
   $Uri = $MaaS360Session.baseUrl + 'device-apis/devices/1.0/summary/' + $MaaS360Session.billingID
 
   $Body = @{}
-  
+
   foreach ($Param in $PSBoundParameters.GetEnumerator())
   {
     $Body.Add($Param.Key.Substring(0, 1).ToLower() + $Param.Key.Substring(1), $Param.Value)
   }
 
-  try 
+  try
   {
     $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' `
       -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
@@ -50,5 +50,5 @@ function Get-MaaS360DeviceBasic
   {
     $_.Exception.Message
   }
-  
+
 }

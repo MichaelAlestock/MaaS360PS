@@ -49,11 +49,11 @@ function Invoke-MaaS360Method
             }
         }
     }
-   
+
 
     # Maybe we should dynamically build the headers ^^
     $Headers = $MaaS360Session.tempHeaders
-    
+
     try
     {
         # Not sure if smart to keep it out in the open like this instead of behind a variable

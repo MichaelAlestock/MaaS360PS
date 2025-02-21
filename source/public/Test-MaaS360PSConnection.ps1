@@ -3,6 +3,7 @@
 
 function Test-MaaS360PSConnection
 {
+    [OutputType([boolean])]
     [CmdletBinding()]
     Param(
         [string]$BillingID,
@@ -31,14 +32,14 @@ function Test-MaaS360PSConnection
         Method         = $Method
         Headers        = $Headers
         Authentication = 'Bearer'
-        Token          = $MaaS360Session.apiKey 
+        Token          = $MaaS360Session.apiKey
         # Forgot token needs to actually be sent as a securestring and is only sent as plain text when used getting a new token.. wow
     }
 
     try
     {
         $TestResponse = Invoke-MaaS360Method @Parameters
-        
+
         Write-Debug -Message "Debug response: $($TestResponse)"
 
         # Not sure how else to check for content in the response other than checking if it's a PSCustomObject since it wouldn't be if it were an error.
@@ -55,7 +56,7 @@ function Test-MaaS360PSConnection
         }
     }
     catch
-    {   
+    {
         throw $_
-    } 
+    }
 }
