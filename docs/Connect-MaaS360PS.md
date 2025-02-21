@@ -13,22 +13,22 @@ Retrieve an API key from the MaaS360 web services API.
 
 ## SYNTAX
 
-### Connect with API token (Default)
-```
-Connect-MaaS360PS -Method <String> [-Result] [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### New API token
+### New API token (Default)
 ```
 Connect-MaaS360PS -BillingID <String> -Method <String> -PlatformID <String> -AppID <String>
- -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential> [-Result]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+### Retrieve info
+```
+Connect-MaaS360PS [-Validate] [-Result] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 The `Connect-MaaS360PS` function retrieves an API key from the MaaS360 web services API.
 
-The first time the function is ran, you must utilize the `[POST]` method as well as all applicable parameters to authenticate against MaaS360's endpoint. If you follow-up your initial run with another but utilizing the `[GET]` parameter, you can retrieve information regarding your session.
+The first time the function is ran, you must utilize the `[POST]` method as well as all applicable parameters to authenticate against MaaS360's endpoint. If you follow-up your initial run with another but utilizing the `[VALIDATE]` switch parameter, you can retrieve information regarding your session.
 
 ## EXAMPLES
 
@@ -41,45 +41,15 @@ Initial command that should be run when first connecting to your MaaS360 instanc
 
 ### EXAMPLE 2
 ```
-Connect-MaaS360PS -Method 'Get'
+Connect-MaaS360PS -Validate
 
-Retrieving assumed connection status. If the command is ran with the [GET] method before retrieving an API key, the command will fail asking the user to run the command with the [POST] method to retrieve one.
+Retrieving assumed connection status. If the command is ran with the [VALIDATE] switch before retrieving an API key, the command will fail asking the user to run the command with the [POST] method to retrieve one.
 ```
 
 ## PARAMETERS
 
-### -BillingID
-Billing number for your MaaS360 account.
-
-```yaml
-Type: String
-Parameter Sets: New API token
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Method
-HTTP method used to send a request.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PlatformID
-Identifier for the API platform.
+### -AppAccessKey
+Randomly generated identifier usually containing your billing number.
 
 ```yaml
 Type: String
@@ -123,8 +93,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -AppAccessKey
-Randomly generated identifier usually containing your billing number.
+### -BillingID
+Billing number for your MaaS360 account.
 
 ```yaml
 Type: String
@@ -153,17 +123,63 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Method
+HTTP method used to send a request.
+
+```yaml
+Type: String
+Parameter Sets: New API token
+Aliases:
+Accepted values: Post
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PlatformID
+Identifier for the API platform.
+
+```yaml
+Type: String
+Parameter Sets: New API token
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Result
 Return more details information regarding your connection.
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: Retrieve info
 Aliases:
 
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Validate
+Return an assumed success message.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Retrieve info
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

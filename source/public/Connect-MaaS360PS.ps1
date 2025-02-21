@@ -5,8 +5,7 @@
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$BillingID,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
-        [Parameter(ParameterSetName = 'Connect with API token', Mandatory = $true)]
-        [ValidateSet('Get', 'Post')]
+        [ValidateSet('Post')]
         [string]$Method,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$PlatformID,
@@ -19,6 +18,9 @@
         [Parameter(HelpMessage = 'Enter same credentials utilized to log into MaaS360 web portal.',
             ParameterSetName = 'New API token', Mandatory = $true)]
         [PSCredential]$Credentials,
+        [Parameter(ParameterSetName = 'Retrieve info')]
+        [switch]$Validate,
+        [Parameter(ParameterSetName = 'Retrieve info')]
         [switch]$Result
     )
 
@@ -87,11 +89,23 @@
         }
         
         Write-Output -InputObject 'Successfully obtained API KEY. '
+        Write-Output -InputObject ''
+        Write-Output -InputObject 'Running "Test-MaaS360PSConnection" to test your API key and connection.'
+        Write-Output -InputObject ''
+
+        if (-not (Test-MaaS360PSConnection -BillingID $MaaS360Session.billingID -Method 'Get'))
+        {
+            throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
+        }
+        else
+        {
+            Write-Output -InputObject 'Connection to your MaaS360 instance is fully confirmed. Feel free to use all commands.'
+        }
     }
 
-    if ($Method -eq 'Get')
+    if ($Validate.IsPresent)
     {
-        if ($MaaS360Session.authEndpoint -eq [System.String]::Empty)
+        if (($MaaS360Session.authEndpoint -eq [System.String]::Empty) -or ($MaaS360Session.apiKey -eq [System.String]::Empty))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
@@ -109,14 +123,5 @@
         Write-Verbose -Message "Clearing [$($MaaS360Session.authEndpoint)] from 'MaaS360Session'."
         $MaaS360Session.authEndpoint = ''
         Write-Verbose -Message "AuthEndpoint is now '[System.String]::Empty'."
-    }
-
-    if (-not (Test-MaaS360PSConnection -BillingID $MaaS360Session.billingID -Method 'Get'))
-    {
-        throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
-    }
-    else
-    {
-        Write-Output -InputObject 'Connection to your MaaS360 instance is fully confirmed. Feel free to use all commands.'
     }
 }

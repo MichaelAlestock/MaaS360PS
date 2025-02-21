@@ -65,8 +65,6 @@ function Invoke-MaaS360Method
     }
     catch
     {
-        # Just the basics for right now
-        $_.ErrorDetails.Message
-        $_.Exception.Message
+        Get-BetterError -ErrorObject $InvokeResponse
     }
 }

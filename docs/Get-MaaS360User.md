@@ -32,6 +32,22 @@ Get-MaaS360User -EmailAddress 'jim_bean@drinks.net'
 
 Returns info relating to the user Jim Bean.
 
+### Example 2
+```powershell
+Get-maaS360User -EmailAddress 'floydk@gnmhc.org'
+
+Exception: No API key found. Did you run Connect-MaaS360PS before running this command?
+```
+
+Running the function before an API key was created.
+
+### Example 3
+```powershell
+Get-maaS360User -EmailAddress 'floydk@gnmhc.org'
+
+WARNING: Token has expired. Please run Connect-MaaS360PS with the [POST] method to generate a new one.
+```
+
 ## PARAMETERS
 
 ### -EmailAddress
