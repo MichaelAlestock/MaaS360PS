@@ -4,7 +4,7 @@ function Get-MaaS360Device
   [CmdletBinding()]
 
   # Need to add parameter set names
-  Param(
+  param(
     [int]$PageNumber,
     [ValidateSet('25', '50', '100', '200', '250')]
     [int]$PageSize,
@@ -23,7 +23,7 @@ function Get-MaaS360Device
     [string]$ManagedStatus
   )
 
-  $BillingID = Get-PSMaaS360BillingID
+  $BillingID = $MaaS360Session.billingID
   $Endpoint = "device-apis/devices/2.0/search/customer/$BillingID"
 
   $Body = @{}
@@ -55,7 +55,7 @@ function Get-MaaS360Device
     $Response = Invoke-PSMaaS360APIRequest -Method 'Get' -Body $Body -Endpoint $Endpoint
     $ResponseArray = @($Response.devices.device)
 
-    $Object = Foreach ($Obj in $ResponseArray)
+    $Object = foreach ($Obj in $ResponseArray)
     {
 
       $BasicInfo = Get-PSMaaS360DeviceBasic -SerialNumber $Obj.maas360DeviceID

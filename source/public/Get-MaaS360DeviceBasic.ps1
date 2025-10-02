@@ -5,12 +5,12 @@ function Get-MaaS360DeviceBasic
   [CmdletBinding()]
 
   # Need to add parameter set names
-  Param(
+  param(
     [Parameter(ValueFromPipeline = $true)]
     [string]$SerialNumber
   )
 
-  $BillingID = Get-GNMaaS360BillingID
+  $BillingID = $MaaS360Session.billingID
   $Endpoint = "/device-apis/devices/1.0/summary/$BillingID"
 
   $Body = @{}
