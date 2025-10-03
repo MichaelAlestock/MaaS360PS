@@ -18,8 +18,11 @@ function Test-MaaS360PSConnection
     #>
     
     [CmdletBinding()]
-    Param(
+    param(
+        [Parameter(Mandatory = $True)]
         [string]$BillingID,
+        [Parameter(Mandatory = $True)]
+        [ValidateSet('Get')]
         [string]$Method
     )
 
