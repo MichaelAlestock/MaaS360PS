@@ -1,8 +1,8 @@
 function Get-MaaS360User
 {
-  [OutputType(PSCustomObject)]
+  # Removed PSCustomObject output type
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(
       HelpMessage = "Email address of the user that's searched for."
     )]
@@ -16,6 +16,7 @@ function Get-MaaS360User
     [Parameter(
       HelpMessage = "Username of the user that's searched for."
     )]
+    [Alias('Username')]
     [string]$PartialUserName,
 
     [Parameter(
@@ -48,16 +49,16 @@ function Get-MaaS360User
     [int]$IncludeCustomAttributes = 0,
 
     [Parameter(
-      HelpMessage = 'Page number returned. 1 (Default)'
+      HelpMessage = 'Number of objects per page. 25 (Default)'
     )]
     [ValidateSet(25, 50, 100, 200, 250)]
-    [int]$PageSize = 50,
+    [int]$PageSize = 25,
 
     [Parameter(
       HelpMessage = 'Level of matching. 0 = Partial | 1 = Exact (Default)'
     )]
     [ValidateSet(0, 1)]
-    [int]$Match = 1,
+    [int]$Match = 0,
 
     [Parameter(
       HelpMessage = 'Time in Unix epoch milliseconds, returns users updated after this time'
@@ -77,7 +78,7 @@ function Get-MaaS360User
 
   $Body = @{}
 
-  # Takes in PSBoundParameters and converts the key name to the proper format i.e. emailAddress and not EmailAddress
+  # Takes in PSBoundParameters and converts the key name to the proper format e.g. emailAddress and not EmailAddress
   # then adds it to the body along with the value
   foreach ($Param in $PSBoundParameters.GetEnumerator())
   {
@@ -88,27 +89,22 @@ function Get-MaaS360User
   $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' `
     -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
 
-  $TotalUsers = $Response.users.count
-  $ActualUsers = $Response.users.user
-  $ReturnedPageNumber = $Response.users.pageNumber
-  $ReturnedPageSize = $Response.users.pageSize
-
-  Get-ProgressInformation -Count $TotalUsers -Page $ReturnedPageNumber -Size $ReturnedPageSize
+  # Get-ProgressInformation -Count $Response.users.count -Page $Response.users.pageNumber -Size $Response.users.pageSize
 
   switch ($Response)
   {
-    { $TotalUsers -le 0 }
+    { $Response.users.count -le 0 }
     {
       throw 'No user information returned. Please check your inputs and try again.'
       break
     }
-    { ($ReturnedPageNumber -eq [System.String]::Empty) -or ($ReturnedPageSize -eq [System.String]::Empty) }
+    { ($Response.users.pageNumber -eq [System.String]::Empty) -or ($Response.users.pageSize -eq [System.String]::Empty) }
     {
       throw 'Page number or page size is empty. Please check your parameter values and try again.'
     }
-    { $TotalUsers -gt 0 }
+    { $Response.users.count -gt 0 }
     {
-      $ActualUsers | ForEach-Object {
+      $Response.users.user | ForEach-Object {
         [PSCustomObject]@{
           AuthType               = $_.authType
           CreatedDate            = $_.createDate
@@ -117,7 +113,7 @@ function Get-MaaS360User
           EmailAddress           = $_.emailAddress
           EmployeeID             = $_.employeeID
           FullName               = $_.fullName
-          Groups                 = $_.groups.group
+          Groups                 = $_.groups.group.name # Not sure what this will look like if they have multiple groups but we'll find out eventually
           ID                     = $_.id
           JobTitle               = $_.jobTitle
           Location               = $_.location
