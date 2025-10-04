@@ -1,6 +1,6 @@
 #region Build Module
 [CmdletBinding(DefaultParameterSetName = 'Markdown help files')]
-Param(
+param(
     [Parameter(ParameterSetName = 'Control version')]
     [version]$Version,
     [Parameter(ParameterSetName = 'Control version')]
@@ -77,32 +77,33 @@ $ExternalHelpPath = '.\docs\en-us'
 
 switch ($PSBoundParameters.Keys)
 {
-    'Build'
+    'Build' # Build the entire PSM1 and output it into the output/MaaS360PS directory in the matching version folder
     {
         Build-Module @Parameters
         break
     }
-    'Create'
+    'Create' # Create entirely new markdown help files
     {
         Import-Module -Name $VersionSpecificManifest
         New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $DocsPath
         New-MarkdownAboutHelp -OutputFolder $ExternalHelpPath -AboutName 'about_MaaS360PS'
         break
     }
-    'External'
+    'External' # Create entirely new external (XML) help files
     {
         New-ExternalHelp $DocsPath -OutputPath $ExternalHelpPath -Force
         break
     }
-    'Update'
+    'Update' # Update the current version of documentation 
     {
         Import-Module -Name $VersionSpecificManifest
         Update-MarkdownHelp -Path $DocsPath
         break
     }
-    'Default'
+    'Default' # Do nothing except warn that you're about to do nothing because you ran the command without input
     {
         Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] switch.'
+        break
     }
 }
 #endregion Build Module
