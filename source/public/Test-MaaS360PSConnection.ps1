@@ -5,8 +5,10 @@ function Test-MaaS360PSConnection
 {
     [OutputType([boolean])]
     [CmdletBinding()]
-    Param(
+    param(
+        [Parameter(Mandatory = $true)]
         [string]$BillingID,
+        [ValidateSet('Get')]
         [string]$Method
     )
 
@@ -33,7 +35,6 @@ function Test-MaaS360PSConnection
         Headers        = $Headers
         Authentication = 'Bearer'
         Token          = $MaaS360Session.apiKey
-        # Forgot token needs to actually be sent as a securestring and is only sent as plain text when used getting a new token.. wow
     }
 
     try
