@@ -1,121 +1,153 @@
 function Get-MaaS360Device
 {
-  # Need to add a default parameter set
   [CmdletBinding()]
-
-  # Need to add parameter set names
   param(
-    [int]$PageNumber,
-    [ValidateSet('25', '50', '100', '200', '250')]
-    [int]$PageSize,
+    [Parameter(
+      HelpMessage = 'Page number returned. 1 (Default)'
+    )]
+    [int]$PageNumber = 1,
+    [Parameter(
+      HelpMessage = 'Page number returned. 1 (Default)'
+    )]
+    [ValidateSet(25, 50, 100, 200, 250)]
+    [int]$PageSize = 25,
+    [Parameter(
+      HelpMessage = 'Level of matching. 0 = Partial | 1 = Exact (Default)'
+    )]
     [ValidateSet(0, 1)]
-    [int]$Match,
-    [string]$DeviceName,
-    [string]$PhoneNumber,
-    [Parameter(ValueFromPipelineByPropertyName = $True)]
-    [string]$Username,
-    [string]$EmailAddress,
+    [int]$Match = 0,
+    [Parameter(
+      HelpMessage = 'Name of the device that should be searched for.'
+    )]
+    [string]$PartialDeviceName,
+    [Parameter(
+      HelpMessage = 'Phone number that should be searched for.'
+    )]
+    [string]$PartialPhoneNumber,
+    [Parameter(
+      HelpMessage = 'Username of the user that should be searched for.', ParameterSetName = 'User information', ValueFromPipelineByPropertyName
+    )]
+    [Alias('Username')]
+    [string]$PartialUsername,
+    [Parameter(
+      HelpMessage = 'Email address of the user that should be searched for.
+    ', ValueFromPipelineByPropertyName)]
+    [Alias('EmailAddress')]
+    [string]$Email,
+    [Parameter(
+      HelpMessage = 'Status of the device. Active = Device is under MDM control | Inactive = Device is not under MDM control '
+    )]
     [ValidateSet('Active', 'Inactive')]
     [string]$DeviceStatus,
-    [ValidatePattern('^[0-9]{15}$', ErrorMessage = 'IMEI provided is not valid.')]
-    [string]$IMEI,
+    [string]$Maas360DeviceId,
+    [string]$MdmMailboxDeviceId,
+    [string]$MailboxDeviceId,
+    [string]$PlatformName,
+    [ValidateSet('NOTAPPLIED', 'PENDING', 'COMPLETE')]
+    [string]$SelectiveWipe,
+    [ValidateSet('OOC', 'ALL')]
+    [string]$AppCompliance = 'ALL',
+    [ValidateSet('OOC', 'ALL')]
+    [string]$PlcCompliance = 'ALL',
+    [ValidateSet('OOC', 'ALL')]
+    [string]$RuleCompliance = 'ALL',
+    [ValidateSet('OOC', 'ALL')]
+    [string]$PswdCompliance = 'ALL',
+    [ValidateSet('lastReported', 'installedDate')]
+    [string]$SortAttribute = 'lastReported',
+    [ValidateSet('asc', 'dsc')]
+    [string]$SortOrder = 'dsc',
+    [string]$Udid,
+    [string]$UserDomain,
+    [string]$WifiMacAddress,
+    [Parameter(HelpMessage = 'IMEIesn of the device that should be searched for.')]
+    [ValidatePattern('^[0-9]{15}$', ErrorMessage = 'Provided IMEIesn is not valid. Check the length and try again.')]
+    [string]$ImeiMeid,
+    [Parameter(HelpMessage = 'MDM status of the device.')]
     [ValidateSet('Inactive', 'Activated', 'Control Removed', 'Pending Control Removed', 'User Removed Control', 'Not Enrolled', 'Enrolled')]
-    [string]$ManagedStatus
+    [string]$Maas360ManagedStatus,
+    [switch]$All
   )
 
-  $BillingID = $MaaS360Session.billingID
-  $Endpoint = "device-apis/devices/2.0/search/customer/$BillingID"
-
-  $Body = @{}
-  
-  # FAT if statements but not sure how to turn into a switch without getting in the weeds
-  if ($PSBoundParameters.ContainsKey('DeviceName')) { $Body.Add('partialDeviceName', $DeviceName) }
-  if ($PSBoundParameters.ContainsKey('Username')) { $Body.Add('partialUsername', $Username) }
-  if ($PSBoundParameters.ContainsKey('PhoneNumber')) { $Body.Add('partialPhoneNumber', $PhoneNumber) }
-  if ($PSBoundParameters.ContainsKey('PageSize')) { $Body.Add('pageSize', $PageSize) }
-  if ($PSBoundParameters.ContainsKey('PageNumber')) { $Body.Add('pageNumber', $PageNumber) }
-  if ($PSBoundParameters.ContainsKey('Match')) { $Body.Add('match', $Match) }
-  if ($PSBoundParameters.ContainsKey('EmailAddress')) { $Body.Add('email', $EmailAddress) }
-  if ($PSBoundParameters.ContainsKey('DeviceStatus')) { $Body.Add('deviceStatus', $DeviceStatus) }
-  if ($PSBoundParameters.ContainsKey('IMEI')) { $Body.Add('imeiMeid', $IMEI) }
-  if ($PSBoundParameters.ContainsKey('ManagedStatus')) { $Body.Add('maas360ManagedStatus', $ManagedStatus) }
-
-  <#
-  # Write debug to show not only what params were used when invoking the command but
-  # also to show what params are a part of the overall body that is sent in the request
-  #>
-
-  Write-Debug -Message `
-  ( "Running $($MyInvocation.MyCommand)`n" +
-    "PSBoundParameters:`n$($PSBoundParameters | Format-List | Out-String)" +
-    "Get-PSMaaS360Device parameters:`n$($Body | Format-List | Out-String)" )
-
-  try 
+  begin
   {
-    $Response = Invoke-PSMaaS360APIRequest -Method 'Get' -Body $Body -Endpoint $Endpoint
-    $ResponseArray = @($Response.devices.device)
-
-    $Object = foreach ($Obj in $ResponseArray)
+    # Needed to be sure an API key was obtained before running the command
+    if ($MaaS360Session.apiKey -eq [System.String]::Empty)
     {
+      throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
+    }
+  }
 
-      $BasicInfo = Get-PSMaaS360DeviceBasic -SerialNumber $Obj.maas360DeviceID
-      $RemainingStorage = "$($BasicInfo.FreeSpace) GB"
-      $ICCID = ($BasicInfo.ICCID).ToString().Replace(' ', '')
-      $Carrier = $BasicInfo.Carrier
+  process
+  {
+    $Uri = $MaaS360Session.baseUrl + 'device-apis/devices/2.0/search/customer/' + $MaaS360Session.billingID
 
-      [PSCustomObject]@{
-        'LastReported'       = $Obj.lastReported
-        'Name'               = $Obj.deviceName
-        'Type'               = $Obj.deviceType
-        'Status'             = $Obj.deviceStatus
-        'Serial'             = $Obj.platformSerialNumber
-        'MdmSerial'          = $Obj.maas360DeviceID
-        'IMEI'               = $Obj.imeiEsn
-        'ICCID'              = $ICCID
-        'Carrier'            = $Carrier
-        'RemainingStorage'   = $RemainingStorage
-        'Enrollment'         = $Obj.maas360ManagedStatus
-        'Owner'              = $Obj.username
-        'OwnerEmail'         = $Obj.emailAddress
-        'OwnedBy'            = $Obj.ownership
-        'Manufacturer'       = $Obj.manufacturer
-        'Model'              = $Obj.model
-        'ModelId'            = $Obj.modelId
-        'iOS'                = $Obj.osName
-        'iOS_Version'        = $Obj.osVersion
-        'PhoneNumber'        = ($Obj.phoneNumber).Remove(0, 2).Insert(3, '.').Insert(7, '.')
-        'AppCompliance'      = $Obj.appComplianceState
-        'PasscodeCompliance' = $Obj.passcodeCompliance
-        'PolicyCompliance'   = $Obj.policyComplianceState
-        'Policy'             = $Obj.mdmPolicy
-        'DateRegistered'     = $Obj.installedDate
-        'iTunesEnabled'      = $Obj.itunesStoreAccountEnabled
-        'WipeStatus'         = $Obj.selectiveWipeStatus
-        'UDID'               = $Obj.udid
-        'MAC_Address'        = $Obj.wifiMacAddress
+    $Body = @{}
+
+    # Takes in PSBoundParameters and converts the key name to the proper format i.e. emailAddress and not EmailAddress
+    # then adds it to the body along with the value
+    foreach ($Param in $PSBoundParameters.GetEnumerator())
+    {
+      $Body.Add($Param.Key.Substring(0, 1).ToLower() + $Param.Key.Substring(1), $Param.Value)
+    }
+
+    $Response = Invoke-MaaS360Method -Uri $Uri -Method 'Get' -Body $Body -Authentication 'BEARER' -Token $MaaS360Session.apiKey -Headers $MaaS360Session.tempHeaders
+
+    # Obv don't wanna repeat myself so I'll change this in another update but here just incase the token expired
+    if ($MaaS360Session.apiKey -eq [System.String]::Empty)
+    {
+      throw 'No API key found. Did you run Connect-MaaS360PS before running this command?'
+    }
+
+    # Get-ProgressInformation -Count $Response.devices.count -Page $Response.devices.pageNumber -Size $Response.devices.pageSize
+
+    $Response | ForEach-Object {
+
+      $BasicInfo = Get-MaaS360DeviceBasic -DeviceId $Response.devices.device.maas360DeviceID
+      # $RemainingStorage = "$($BasicInfo.FreeSpace) GB"
+      # $ICCID = ($BasicInfo.ICCID).ToString().Replace(' ', '')
+      # $Carrier = $BasicInfo.'Current Carrier'
+
+      $Limited = [PSCustomObject]@{
+        'DeviceLastReported'     = $_.devices.device.lastReported
+        'DeviceName'             = $_.devices.device.deviceName
+        'DeviceType'             = $_.devices.device.deviceType
+        'DeviceStatus'           = $_.devices.device.deviceStatus
+        'DeviceSerial'           = $_.devices.device.platformSerialNumber
+        'MdmSerial'              = $_.devices.device.maas360DeviceID
+        'ImeiEsn'                = $_.devices.device.imeiEsn
+        'MdmEnrollmentStatus'    = $_.devices.device.maas360ManagedStatus
+        'DeviceOwner'            = $_.devices.device.username
+        'OwnerEmailAddress'      = $_.devices.device.emailAddress
+        'DeviceModel'            = $_.devices.device.modelId
+        'OperatingSystem'        = $_.devices.device.osName
+        'OperatingSystemVersion' = $_.devices.device.osVersion
+        'DevicePhoneNumber'      = $_.devices.device.phoneNumber
+        'MdmAppCompliance'       = $_.devices.device.appComplianceState
+        'MdmPasscodeCompliance'  = $_.devices.device.passcodeCompliance
+        'MdmPolicyCompliance'    = $_.devices.device.policyComplianceState
+        'MdmPolicy'              = $_.devices.device.mdmPolicy
+        'DeviceRegistrationDate' = $_.devices.device.installedDate
+        'iTunesEnabled'          = $_.devices.device.itunesStoreAccountEnabled
+        'SelectiveWipeStatus'    = $_.devices.device.selectiveWipeStatus
+        'Udid'                   = $_.devices.device.udid
+        'WifiMacAddress'         = $_.devices.device.wifiMacAddress
       }
-   
-    }
-    
-    # Create our custom object with the Device.Information type
-    $Object.PSObject.TypeNames.Insert(0, 'Device.Information')
-    $DefaultDisplaySet = @('Status', 'Enrollment', 'Owner', 'PhoneNumber', 'IMEI', 'ICCID', 'Serial', 'LastReported')
-    $DefaultDisplayPropertySet = [System.Management.Automation.PSPropertySet]::new('DefaultDisplayPropertySet', [string[]]$DefaultDisplaySet)
-    $PSStandardMembers = [System.Management.Automation.PSMemberInfo[]]@($DefaultDisplayPropertySet)
-    $Object | Add-Member -MemberType 'MemberSet' -Name 'PSStandardMembers' -Value $PSStandardMembers
-
-    if ($null -eq $ResponseArray[0])
-    {
-      Write-Output -InputObject 'Device not found. Please check the name and try again.'
-    }
-    else
-    {
-      $Object
+      if ($All.IsPresent)
+      {
+        foreach ($Item in $BasicInfo)
+        {
+          foreach ($Device in $Item.GetEnumerator())
+          {
+            $Limited | Add-Member -TypeName 'PSObject' -MemberType 'NoteProperty' -Name $Device.Key -Value $Device.Value
+          }
+        }
+        $Limited
+      }
+      else
+      {
+        $Limited
+      }
     }
   }
-  catch
-  {
-    $_.Exception.Message
-  }
-  
 }

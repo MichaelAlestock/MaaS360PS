@@ -1,29 +1,12 @@
 ﻿function Connect-MaaS360PS
 {
-    <#
-    .SYNOPSIS
-        A short one-line action-based description, e.g. 'Tests if a function is valid'
-    .DESCRIPTION
-        A longer description of the function, its purpose, common use cases, etc.
-    .NOTES
-        Bugs to fix:
-            - Receive a success message when getting trying to receive a token even when using incorrect info
-            - Always fails the first auth attempt even when info is correct and succeeds on the next attempt
-                - Annoyance for now
-    .LINK
-        Specify a URI to a help page, this will show when Get-Help -Online is used.
-    .EXAMPLE
-        Test-MyTestFunction -Verbose
-        Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
-    #>
-
-    [CmdletBinding(DefaultParameterSetName = 'Connect with API token')]
-    Param(
+    [CmdletBinding(DefaultParameterSetName = 'New API token')]
+    param(
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$BillingID,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
-        [Parameter(ParameterSetName = 'Connect with API token', Mandatory = $true)]
-        [ValidateSet('Get', 'Post')]
+        [Parameter(ParameterSetName = 'Retrieve info', Mandatory = $true)]
+        [ValidateSet('Post')]
         [string]$Method,
         [Parameter(ParameterSetName = 'New API token', Mandatory = $true)]
         [string]$PlatformID,
@@ -36,6 +19,9 @@
         [Parameter(HelpMessage = 'Enter same credentials utilized to log into MaaS360 web portal.',
             ParameterSetName = 'New API token', Mandatory = $true)]
         [PSCredential]$Credentials,
+        [Parameter(ParameterSetName = 'Retrieve info')]
+        [switch]$Validate,
+        [Parameter(ParameterSetName = 'Retrieve info')]
         [switch]$Result
     )
 
@@ -52,7 +38,11 @@
     {
         throw 'Unable to find the session variable [$MaaS360Session]. Try re-importing the module with the `-Force` parameter if you continue to have issues.'
     }
-        
+    elseif ($PSBoundParameters.Count -eq 0) # We need the command to be ran with at least something
+    {
+        throw 'Account information not provided. Please run the command again with the appropriate parameters.'
+    }
+
     # $MaaS360Session.apiToken = $null  # Play with this after we make the call and retrieve the API token
     if ($Method -eq 'Post')
     {
@@ -65,6 +55,14 @@
         # $MaaS360Session.url = $Url # Getting rid of this and just gonna place it in the script var since it's global
         # $MaaS360Session.endpoint = $Endpoint # Getting rid of this too for the same reasons as ^^
         $MaaS360Session.billingID = $BillingID
+
+        # Stop if BillingID doesn't exist before anything can even continue
+        # 
+        if ($MaaS360Session.billingID -eq [System.String]::Empty)
+        {
+            throw 'Billing ID is missing. Please check all inputs and run [Connect-MaaS360PS] again.'
+        }
+
         $MaaS360Session.platformID = $PlatformID
         $MaaS360Session.password = $Credentials.Password | ConvertFrom-SecureString -AsPlainText
         $MaaS360Session.userName = $Credentials.UserName
@@ -92,7 +90,7 @@
         $RawToken = $AuthResponse.authResponse.authToken
         Write-Debug -Message "RAW API KEY: $RawToken"
         $MaaS360Session.apiKey = ('MaaS token=' + $("""$RawToken""")) | ConvertTo-SecureString -AsPlainText -Force
- 
+
         Write-Debug -Message "URI: $($Uri)"
         Write-Debug -Message "SECURE API KEY: $($MaaS360Session.apiKey)"
 
@@ -102,13 +100,28 @@
 
             throw 'Something went wrong, [API KEY] was not retrieved. Please check parameter values to be sure all info is correct or run the command with the -Debug parameter to get more info.'
         }
-        
+
         Write-Output -InputObject 'Successfully obtained API KEY. '
+        Write-Output -InputObject ''
+        Write-Output -InputObject 'Confirming API key and connection to your MaaS360 account.'
+        Write-Output -InputObject ''
+
+        if (-not (Test-MaaS360PSConnection -BillingID $MaaS360Session.billingID -Method 'Get'))
+        {
+            throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
+        }
+        else
+        {
+            Write-Output -InputObject 'Connection confirmed. Feel free to use all commands.'
+        }
     }
 
-    if ($Method -eq 'Get')
+    if ($Validate.IsPresent)
     {
-        if (($MaaS360Session.apiKey -eq '') -or ($MaaS360Session.authEndpoint -eq ''))
+        Write-Verbose -Message 'Checking if the authEndpoint exists. '
+        Write-Verbose -Message 'Checking if an API key exists.'
+        
+        if (($MaaS360Session.authEndpoint -eq [System.String]::Empty) -or ($MaaS360Session.apiKey -eq [System.String]::Empty))
         {
             throw 'Please use Connect-MaaS360PS with the [POST] method before attempting to utilize any commands.'
         }
@@ -120,16 +133,11 @@
             Write-Output -InputObject "URI: $($MaaS360Session.baseUrl + $MaaS360Session.authEndpoint + '/' + $MaaS360Session.billingID)"
             Write-Output -InputObject "API KEY: $Token"
         }
-       
-        Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
-    }
 
-    if (-not (Test-MaaS360PSConnection -BillingID $BillingID -Method 'Get'))
-    {
-        throw 'Unable to verify connection to MaaS360 instance. Please check your [URL], [API KEY], or re-run command with [POST] method to regenerate a key.'
-    }
-    else
-    {
-        Write-Output -InputObject 'Connection to your MaaS360 instance is fully confirmed. Feel free to use all commands.'
+        Write-Output -InputObject 'Connection to MaaS360 instance assumed successful. Run Test-MaaS360PSConnection for confirmation.'
+
+        Write-Verbose -Message "Clearing [$($MaaS360Session.authEndpoint)] from 'MaaS360Session'."
+        $MaaS360Session.authEndpoint = ''
+        Write-Verbose -Message "AuthEndpoint is now '[System.String]::Empty'."
     }
 }

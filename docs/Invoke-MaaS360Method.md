@@ -8,7 +8,7 @@ schema: 2.0.0
 # Invoke-MaaS360Method
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Alternative to `Invoke-RestMethod` to send an HTTP request.
 
 ## SYNTAX
 
@@ -19,21 +19,12 @@ Invoke-MaaS360Method [[-Body] <Hashtable>] [[-Method] <String>] [[-Uri] <String>
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
-
-## EXAMPLES
-
-### Example 1
-```powershell
-PS C:\> {{ Add example code here }}
-```
-
-{{ Add example description here }}
+The `Invoke-MaaS360Method` function is used internally by other functions to handle the HTTP request instead of utilizing `Invoke-RestMethod`.
 
 ## PARAMETERS
 
 ### -Authentication
-{{ Fill Authentication Description }}
+Authentication method used.
 
 ```yaml
 Type: String
@@ -48,7 +39,7 @@ Accept wildcard characters: False
 ```
 
 ### -Body
-{{ Fill Body Description }}
+Data being sent via POST or PATCH.
 
 ```yaml
 Type: Hashtable
@@ -63,7 +54,7 @@ Accept wildcard characters: False
 ```
 
 ### -ContentType
-{{ Fill ContentType Description }}
+Used for POST requests where form data is usually sent instead of JSON.
 
 ```yaml
 Type: String
@@ -78,7 +69,7 @@ Accept wildcard characters: False
 ```
 
 ### -Headers
-{{ Fill Headers Description }}
+HTTP headers used in the request.
 
 ```yaml
 Type: Hashtable
@@ -93,7 +84,7 @@ Accept wildcard characters: False
 ```
 
 ### -Method
-{{ Fill Method Description }}
+HTTP method used to send a request.
 
 ```yaml
 Type: String
@@ -108,7 +99,7 @@ Accept wildcard characters: False
 ```
 
 ### -Token
-{{ Fill Token Description }}
+API token being sent in the request.
 
 ```yaml
 Type: SecureString
@@ -123,7 +114,7 @@ Accept wildcard characters: False
 ```
 
 ### -Uri
-{{ Fill Uri Description }}
+Full URL that the request is being sent to.
 
 ```yaml
 Type: String
@@ -137,31 +128,15 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

@@ -8,68 +8,48 @@ schema: 2.0.0
 # Connect-MaaS360PS
 
 ## SYNOPSIS
-A short one-line action-based description, e.g.
-'Tests if a function is valid'
+
+Retrieve an API key from the MaaS360 web services API.
 
 ## SYNTAX
 
-### Connect with API token (Default)
-```
-Connect-MaaS360PS -Method <String> [-Result] [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### New API token
+### New API token (Default)
 ```
 Connect-MaaS360PS -BillingID <String> -Method <String> -PlatformID <String> -AppID <String>
- -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential> [-Result]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ -AppVersion <String> -AppAccessKey <String> -Credentials <PSCredential> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+### Retrieve info
+```
+Connect-MaaS360PS [-Validate] [-Result] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-A longer description of the function, its purpose, common use cases, etc.
+The `Connect-MaaS360PS` function retrieves an API key from the MaaS360 web services API.
+
+The first time the function is ran, you must utilize the `[POST]` method as well as all applicable parameters to authenticate against MaaS360's endpoint. If you follow-up your initial run with another but utilizing the `[VALIDATE]` switch parameter, you can retrieve information regarding your session.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Test-MyTestFunction -Verbose
-Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
+Connect-MaaS360PS -PlatformID '0' -BillingID '01234567' -AppID '01234567_beans' -AppVersion '1.0' -AppAccessKey 'bDrt224GZ' -Credentials 'john_bono@u2.music' -Method 'Post'
+
+Initial command that should be run when first connecting to your MaaS360 instance. If an API key is successfully retrieved it will run Test-MaaS360PSConnection to be sure the API key is valid. If the default 'MaaS token=""' is returned, then the command will fail asking the user to run the command again to generate a new API key.
+```
+
+### EXAMPLE 2
+```
+Connect-MaaS360PS -Validate
+
+Retrieving assumed connection status. If the command is ran with the [VALIDATE] switch before retrieving an API key, the command will fail asking the user to run the command with the [POST] method to retrieve one.
 ```
 
 ## PARAMETERS
 
-### -BillingID
-{{ Fill BillingID Description }}
-
-```yaml
-Type: String
-Parameter Sets: New API token
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Method
-{{ Fill Method Description }}
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PlatformID
-{{ Fill PlatformID Description }}
+### -AppAccessKey
+Randomly generated identifier usually containing your billing number.
 
 ```yaml
 Type: String
@@ -84,7 +64,7 @@ Accept wildcard characters: False
 ```
 
 ### -AppID
-{{ Fill AppID Description }}
+Randomly generated identifier granted to user.
 
 ```yaml
 Type: String
@@ -99,7 +79,7 @@ Accept wildcard characters: False
 ```
 
 ### -AppVersion
-{{ Fill AppVersion Description }}
+Version of the application in your MaaS360 instance.
 
 ```yaml
 Type: String
@@ -113,8 +93,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -AppAccessKey
-{{ Fill AppAccessKey Description }}
+### -BillingID
+Billing number for your MaaS360 account.
 
 ```yaml
 Type: String
@@ -143,12 +123,43 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Method
+HTTP method used to send a request.
+
+```yaml
+Type: String
+Parameter Sets: New API token
+Aliases:
+Accepted values: Post
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PlatformID
+Identifier for the API platform.
+
+```yaml
+Type: String
+Parameter Sets: New API token
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Result
-{{ Fill Result Description }}
+Return more details information regarding your connection.
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: Retrieve info
 Aliases:
 
 Required: False
@@ -158,13 +169,13 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressAction
-{{ Fill ProgressAction Description }}
+### -Validate
+Return an assumed success message.
 
 ```yaml
-Type: ActionPreference
-Parameter Sets: (All)
-Aliases: proga
+Type: SwitchParameter
+Parameter Sets: Retrieve info
+Aliases:
 
 Required: False
 Position: Named
@@ -181,10 +192,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ## NOTES
-Information or caveats about the function e.g.
-'This function is not supported in Linux'
+All parameter values can be found in the MaaS360 MDM portal under Setup > Manage Access Key and Setup > Documentation. You must FIRST create an app within the MaaS360 MDM portal before you can obtain most of the required information. You must be an administrator to do so.
 
 ## RELATED LINKS
-
-[Specify a URI to a help page, this will show when Get-Help -Online is used.]()
-

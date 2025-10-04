@@ -1,18 +1,17 @@
 #region Build Module
 [CmdletBinding(DefaultParameterSetName = 'Markdown help files')]
-Param(
+param(
     [Parameter(ParameterSetName = 'Control version')]
     [version]$Version,
     [Parameter(ParameterSetName = 'Control version')]
     [ValidateSet('Major', 'Minor', 'Patch')]
     [string]$BumpVersion,
-    [Parameter(Mandatory = $false)]
     [Parameter(ParameterSetName = 'Markdown help files')]
-    [string]$Path,
-    [Parameter(ParameterSetName = 'Markdown help files')]
-    [string]$Output,
+    [switch]$Create,
     [Parameter(ParameterSetName = 'Markdown help files')]
     [switch]$Update,
+    [Parameter(ParameterSetName = 'Markdown help files')]
+    [switch]$External,
     [Parameter(ParameterSetName = 'Build')]
     [switch]$Build
 )
@@ -63,7 +62,7 @@ $VersionSpecificManifest = [System.IO.Path]::Combine($PSScriptRoot, 'output', 'M
 
 $Parameters = @{
     SourcePath        = [System.IO.Path]::Combine($PSScriptRoot, 'source', 'build.psd1')
-    SourceDirectories = @('public', 'private')
+    SourceDirectories = @('public', 'private', 'classes')
     OutputDirectory   = '../output'
     Version           = $Version
     Prefix            = "New-Variable -Name 'MaaS360Session' -Value @{
@@ -73,30 +72,38 @@ $Parameters = @{
     # UnversionedOutputDirectory = $false
 }
 
+$DocsPath = '.\docs'
+$ExternalHelpPath = '.\docs\en-us'
+
 switch ($PSBoundParameters.Keys)
 {
-    'Build'
+    'Build' # Build the entire PSM1 and output it into the output/MaaS360PS directory in the matching version folder
     {
         Build-Module @Parameters
         break
     }
-    'Output'
+    'Create' # Create entirely new markdown help files
     {
         Import-Module -Name $VersionSpecificManifest
-        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $Path
-        New-MarkdownAboutHelp -OutputFolder $Output -AboutName 'about_MaaS360PS'
-        New-ExternalHelp $Path -OutputPath $Output
+        New-MarkdownHelp -Module 'MaaS360PS' -OutputFolder $DocsPath
+        New-MarkdownAboutHelp -OutputFolder $ExternalHelpPath -AboutName 'about_MaaS360PS'
         break
     }
-    'Update'
+    'External' # Create entirely new external (XML) help files
+    {
+        New-ExternalHelp $DocsPath -OutputPath $ExternalHelpPath -Force
+        break
+    }
+    'Update' # Update the current version of documentation 
     {
         Import-Module -Name $VersionSpecificManifest
-        Update-MarkdownHelp -Path $Path
+        Update-MarkdownHelp -Path $DocsPath
         break
     }
-    'Default'
+    'Default' # Do nothing except warn that you're about to do nothing because you ran the command without input
     {
-        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] parameter.'
+        Write-Warning 'Skipping module build. If you want to build the module, please supply the [-BUILD] switch.'
+        break
     }
 }
 #endregion Build Module
